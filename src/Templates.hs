@@ -1,9 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes #-}
-module Component where
+{-# LANGUAGE QuasiQuotes       #-}
+module Templates where
 
-import Data.Text (Text)
-import Data.String.QQ
+import           Data.String.QQ
+import           Data.Text      (Text)
 
 componentTemplate :: Text
 componentTemplate = [s|
@@ -62,4 +62,28 @@ const COMPONENTContainer = connect(
 )(COMPONENT);
 
 export default COMPONENTContainer;
+|]
+
+stylesTemplate :: Text
+stylesTemplate = [s|
+// @flow
+/*
+  NOTE: This file was auto-generated for a component
+  named "COMPONENT"; it is intended to be modified as
+  needed to be useful.
+*/
+
+import {StyleSheet} from 'react-native';
+
+const styles = StyleSheet.create({
+});
+
+export default styles;
+|]
+
+indexTemplate :: Text
+indexTemplate = [s|
+import COMPONENT from './COMPONENT';
+
+export default COMPONENT;
 |]

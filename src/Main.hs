@@ -4,15 +4,13 @@
 -}
 module Main where
 
-import           Component
 import           Control.Applicative       (optional)
 import           Control.Monad.IO.Class    (MonadIO)
 import           Data.Maybe
 import           Data.Monoid               ((<>))
 import           Filesystem.Path           ((<.>))
 import           Filesystem.Path.CurrentOS (FilePath, append, fromText, (</>))
-import           Index
-import           Styles
+import           Templates
 import           Turtle                    (Text)
 import           Turtle.Format
 import           Turtle.Options

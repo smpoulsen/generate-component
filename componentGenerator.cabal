@@ -17,9 +17,7 @@ cabal-version:       >=1.10
 
 executable componentGenerator
   main-is:             Main.hs
-  other-modules:       Component
-                     , Styles
-                     , Index
+  other-modules:       Templates
   -- other-extensions:    
   build-depends:       base >=4.9 && <4.10
                      , text
