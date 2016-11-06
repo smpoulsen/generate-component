@@ -7,7 +7,19 @@
    #+END_SRC
 
 ** Usage
-   ~componentGenerator COMPONENT_NAME -d OPTIONAL_DIRECTORY -c~
-   - COMPONENT_NAME: required, the name for the component
-   - OPTIONAL_DIRECTORY: an optional directory under which to create the component; defaults to ~./app/components/~
+   #+BEGIN_SRC sh
+     $ ~/.local/bin/componentGenerator --h
+     Component generator
+
+     Usage: componentGenerator NAME [-d|--component-directory DIR]
+     [-c|--make-container]
+
+     Available options:
+     -h,--help                Show this help text
+     -d,--component-directory DIR
+     Directory to add the component
+     -c,--make-container      Create a container component
+   #+END_SRC
+*** Note
+   - DIR: an optional directory under which to create the component; defaults to ~./app/components/~
    - ~-c~: a flag that, if present, additionally generates a redux container component

@@ -6,38 +6,49 @@ module Main where
 
 import           Control.Applicative       (optional)
 import           Control.Monad.IO.Class    (MonadIO)
-import           Data.Maybe
 import           Data.Monoid               ((<>))
+import           Data.Text                 (pack, replace)
 import           Filesystem.Path           ((<.>))
 import           Filesystem.Path.CurrentOS (FilePath, append, fromText, (</>))
+import           Options.Applicative
 import           Templates
 import           Turtle                    (Text)
 import           Turtle.Format
-import           Turtle.Options
+import           Turtle.Options            (options)
 import           Turtle.Prelude            hiding (FilePath, append)
 
 type OSFilePath = Filesystem.Path.CurrentOS.FilePath
 data Settings = Settings
   { sComponentName :: Text
-  , sComponentDir  :: Maybe OSFilePath
-  , sMakecontainer :: Bool
+  , sComponentDir  :: OSFilePath
+  , sMakeContainer :: Bool
   } deriving (Eq, Show, Ord)
+
+
+parser :: Parser Settings
+parser = Settings <$>
+      fmap pack (argument str (metavar "NAME"))
+      <*> fmap (fromText . pack) $ strOption
+        ( long "component-directory"
+       <> short 'd'
+       <> metavar "DIR"
+       <> value "./app/components"
+       <> help "Directory to add the component"
+        )
+  <*> switch
+        ( long "make-container"
+       <> short 'c'
+       <> help "Create a container component"
+        )
 
 main :: IO ()
 main = do
-  (Settings componentName componentDir container) <- options "Component generator" parser
-  case componentDir of
-    Just dir -> copyTemplateDir componentName dir container
-    Nothing  -> copyTemplateDir componentName "./app/components" container
+  settings <- options "Component generator" parser
+  copyTemplateDir settings
   echo "Done"
 
-parser :: Parser Settings
-parser = Settings <$> argText "COMPONENT_NAME" "Name of the component"
-                  <*> optional (optPath "COMPONENT_DIRECTORY" 'd' "Directory to add the component")
-                  <*> switch "containerComponent" 'c' "Create a container component"
-
-copyTemplateDir :: Text -> OSFilePath -> Bool -> IO ()
-copyTemplateDir componentName componentPath' container = do
+copyTemplateDir :: Settings -> IO ()
+copyTemplateDir settings@(Settings componentName componentPath' container) = do
   dirExists <- testdir componentPath
   if dirExists
     then echo "Component directory exists; exiting without action."
@@ -45,20 +56,22 @@ copyTemplateDir componentName componentPath' container = do
       echo $ format ("Making directory at: "%s%"") (format fp componentPath)
       mktree componentPath
       echo "Copying files..."
-      currentDir <- pwd
-      component <- writeTemplateFile (componentPath </> componentNamePath <.> "js") componentTemplate
-      styles    <- writeTemplateFile (componentPath </> "styles.js") stylesTemplate
-      index     <- writeTemplateFile (componentPath </> "index.js") indexTemplate
-      echo "Replacing placeholder text..."
-      if container then do
-        container <- writeTemplateFile (componentPath </> fromText (componentName <> "Container") <.> "js") containerTemplate
-        replacePlaceholder container
-      else
-        echo "Working..."
-      mapM_ replacePlaceholder [component, styles, index]
+      mapM_ componentGenerator [componentTemplate, stylesTemplate, indexTemplate]
+      if sMakeContainer settings
+        then componentGenerator containerTemplate
+        else echo "\n"
   where componentPath = componentPath' </> componentNamePath
         componentNamePath = fromText componentName
+        componentGenerator = generateComponent settings
+
+generateComponent :: Settings -> Template -> IO ()
+generateComponent settings template =
+  writeTemplateFile (componentPath </> fromText sanitizedFileName) (contents template) >>= replacePlaceholder
+  where componentPath = sComponentDir settings </> fromText componentName
+        componentName = sComponentName settings
+        sanitizedFileName = replace "COMPONENT" componentName (filename template)
         replacePlaceholder = replacePlaceholderText componentName
+
 
 writeTemplateFile :: OSFilePath -> Text -> IO OSFilePath
 writeTemplateFile dest src = do

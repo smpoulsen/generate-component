@@ -5,8 +5,13 @@ module Templates where
 import           Data.String.QQ
 import           Data.Text      (Text)
 
-componentTemplate :: Text
-componentTemplate = [s|
+data Template = Template
+  { filename :: Text
+  , contents :: Text
+  }
+
+componentTemplate :: Template
+componentTemplate = Template "COMPONENT.js" [s|
 // @flow
 /*
    NOTE: This file was auto-generated for a component
@@ -30,8 +35,8 @@ COMPONENT.PropTypes = {
 export default COMPONENT;
 |]
 
-containerTemplate :: Text
-containerTemplate = [s|
+containerTemplate :: Template
+containerTemplate = Template "COMPONENTContainer.js" [s|
 // @flow
 /*
    NOTE: This file was auto-generated for a component
@@ -64,8 +69,8 @@ const COMPONENTContainer = connect(
 export default COMPONENTContainer;
 |]
 
-stylesTemplate :: Text
-stylesTemplate = [s|
+stylesTemplate :: Template
+stylesTemplate = Template "styles.js" [s|
 // @flow
 /*
   NOTE: This file was auto-generated for a component
@@ -81,8 +86,8 @@ const styles = StyleSheet.create({
 export default styles;
 |]
 
-indexTemplate :: Text
-indexTemplate = [s|
+indexTemplate :: Template
+indexTemplate = Template "index.js" [s|
 import COMPONENT from './COMPONENT';
 
 export default COMPONENT;
