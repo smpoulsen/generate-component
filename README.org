@@ -1,4 +1,4 @@
-* React Native Component Generator
+* React Component Generator
 
 ** Installation
    Easiest with stack:
@@ -9,7 +9,7 @@
 ** Usage
    #+BEGIN_SRC sh
      stack install
-     # ... #
+     # ... Output omitted for brevity ... #
      Copied executables to $HOME/.local/bin:
      - componentGenerator
 
