@@ -27,7 +27,7 @@ const COMPONENT = ({}) => (
   </div>
 );
 
-COMPONENT.PropTypes = {
+COMPONENT.propTypes = {
 };
 
 export default COMPONENT;
@@ -52,7 +52,7 @@ const COMPONENT = ({}) => (
   </View>
 );
 
-COMPONENT.PropTypes = {
+COMPONENT.propTypes = {
 };
 
 export default COMPONENT;
