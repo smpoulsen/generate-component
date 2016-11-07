@@ -7,7 +7,78 @@
    #+END_SRC
 
 ** Usage
-   ~componentGenerator COMPONENT_NAME -d OPTIONAL_DIRECTORY -c~
-   - COMPONENT_NAME: required, the name for the component
-   - OPTIONAL_DIRECTORY: an optional directory under which to create the component; defaults to ~./app/components/~
+   #+BEGIN_SRC sh
+     stack install
+     # ... #
+     Copied executables to $HOME/.local/bin:
+     - componentGenerator
+
+
+     ~/.local/bin/componentGenerator -h
+     Component generator
+
+     Usage: componentGenerator NAME [-d|--component-directory DIR]
+                               [-c|--make-container] [-n|--react-native]
+
+     Available options:
+       -h,--help                Show this help text
+       -d,--component-directory DIR
+                               Directory to add the component
+       -c,--make-container      Create a container component
+       -n,--react-native        Create a React Native component
+   #+END_SRC
+
+*** Generating a React component:
+   #+BEGIN_SRC sh
+     ~/.local/bin/componentGenerator Test
+     Making directory at: ./app/components/Test
+     Copying files...
+     Writing ./app/components/Test/Test.js...
+     Writing ./app/components/Test/styles.js...
+     Writing ./app/components/Test/index.js...
+     Done
+   #+END_SRC
+
+*** Generating a React component in an arbitrary directory:
+   #+BEGIN_SRC sh
+     ~/.local/bin/componentGenerator -d dir Test
+     Making directory at: dir/Test
+     Copying files...
+     Writing dir/Test/Test.js...
+     Writing dir/Test/index.js...
+     Done
+   #+END_SRC
+
+*** Generating a React Native component:
+   #+BEGIN_SRC sh
+     ~/.local/bin/componentGenerator -cn Test
+     Making directory at: ./app/components/Test
+     Copying files...
+     Writing ./app/components/Test/TestContainer.js...
+     Writing ./app/components/Test/Test.js...
+     Writing ./app/components/Test/styles.js...
+     Writing ./app/components/Test/index.js...
+     Done
+   #+END_SRC
+
+*** Generating a component with a Redux container (works for React and React Native components):
+   #+BEGIN_SRC sh
+     ~/.local/bin/componentGenerator -cn Test
+     Making directory at: ./app/components/Test
+     Copying files...
+     Writing ./app/components/Test/TestContainer.js...
+     Writing ./app/components/Test/Test.js...
+     Writing ./app/components/Test/styles.js...
+     Writing ./app/components/Test/index.js...
+     Done
+   #+END_SRC
+
+*** Attempting to generate a component that already exists:
+   #+BEGIN_SRC sh
+     ~/.local/bin/componentGenerator -cn Test
+     Component directory exists; exiting without action.
+     Done
+   #+END_SRC
+*** Note
+   - DIR: an optional directory under which to create the component; defaults to ~./app/components/~
    - ~-c~: a flag that, if present, additionally generates a redux container component
