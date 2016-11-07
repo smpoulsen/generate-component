@@ -4,51 +4,53 @@
 -}
 module Main where
 
-import           Control.Applicative       (optional)
 import           Control.Monad.IO.Class    (MonadIO)
 import           Data.Monoid               ((<>))
 import           Data.Text                 (pack, replace)
-import           Filesystem.Path           ((<.>))
-import           Filesystem.Path.CurrentOS (FilePath, append, fromText, (</>))
+import           Filesystem.Path.CurrentOS (FilePath, fromText, (</>))
 import           Options.Applicative
 import           Templates
 import           Turtle                    (Text)
 import           Turtle.Format
 import           Turtle.Options            (options)
-import           Turtle.Prelude            hiding (FilePath, append)
+import           Turtle.Prelude
 
 type OSFilePath = Filesystem.Path.CurrentOS.FilePath
 data Settings = Settings
   { sComponentName :: Text
   , sComponentDir  :: OSFilePath
   , sMakeContainer :: Bool
+  , sReactNative   :: Bool
   } deriving (Eq, Show, Ord)
-
-
-parser :: Parser Settings
-parser = Settings <$>
-      fmap pack (argument str (metavar "NAME"))
-      <*> fmap (fromText . pack) $ strOption
-        ( long "component-directory"
-       <> short 'd'
-       <> metavar "DIR"
-       <> value "./app/components"
-       <> help "Directory to add the component"
-        )
-  <*> switch
-        ( long "make-container"
-       <> short 'c'
-       <> help "Create a container component"
-        )
 
 main :: IO ()
 main = do
   settings <- options "Component generator" parser
-  copyTemplateDir settings
+  generateDesiredTemplates settings
   echo "Done"
 
-copyTemplateDir :: Settings -> IO ()
-copyTemplateDir settings@(Settings componentName componentPath' container) = do
+{--| Command line argument parser --}
+parser :: Parser Settings
+parser = Settings <$>
+      fmap pack (argument str (metavar "NAME"))
+      <*> fmap (fromText . pack) (strOption
+        ( long "component-directory"
+       <> short 'd'
+       <> metavar "DIR"
+       <> value "./app/components"
+       <> help "Directory to add the component" ))
+      <*> switch
+        ( long "make-container"
+       <> short 'c'
+       <> help "Create a container component" )
+      <*> switch
+        ( long "react-native"
+       <> short 'n'
+       <> help "Create a React Native component" )
+
+{--| If the component doesn't already exist, creates component directory and requisite files. --}
+generateDesiredTemplates :: Settings -> IO ()
+generateDesiredTemplates settings@(Settings componentName componentPath' _container _native) = do
   dirExists <- testdir componentPath
   if dirExists
     then echo "Component directory exists; exiting without action."
@@ -56,14 +58,26 @@ copyTemplateDir settings@(Settings componentName componentPath' container) = do
       echo $ format ("Making directory at: "%s%"") (format fp componentPath)
       mktree componentPath
       echo "Copying files..."
-      mapM_ componentGenerator [componentTemplate, stylesTemplate, indexTemplate]
-      if sMakeContainer settings
-        then componentGenerator containerTemplate
-        else echo "\n"
+      runGenerator $ determineTemplatesToGenerate settings
   where componentPath = componentPath' </> componentNamePath
         componentNamePath = fromText componentName
         componentGenerator = generateComponent settings
+        runGenerator = mapM_ componentGenerator
 
+{--| Determines which templates to create based on command line arguments. --}
+determineTemplatesToGenerate :: Settings -> [Template]
+determineTemplatesToGenerate settings =
+  case makeReactNative of
+    True  | makeContainer -> containerTemplate : nativeTemplates
+          | otherwise     -> nativeTemplates
+    False | makeContainer -> containerTemplate : reactTemplates
+          | otherwise     -> reactTemplates
+  where makeReactNative = sReactNative settings
+        makeContainer   = sMakeContainer settings
+        reactTemplates  = [componentTemplate, indexTemplate]
+        nativeTemplates = [nativeComponentTemplate, stylesTemplate, indexTemplate]
+
+{--| Generates the component's path, writes the file, and replaces the placeholder text with the template name. --}
 generateComponent :: Settings -> Template -> IO ()
 generateComponent settings template =
   writeTemplateFile (componentPath </> fromText sanitizedFileName) (contents template) >>= replacePlaceholder
@@ -73,12 +87,14 @@ generateComponent settings template =
         replacePlaceholder = replacePlaceholderText componentName
 
 
+{--| Writes a file with the template's contents to a file named after the template's name. --}
 writeTemplateFile :: OSFilePath -> Text -> IO OSFilePath
 writeTemplateFile dest src = do
   echo $ format ("Writing\t"%s%"...") (format fp dest)
   writeTextFile dest src
   return dest
 
+{--| Replaces the text "COMPONENT" in the template file with the component name. --}
 replacePlaceholderText :: MonadIO io => Text -> OSFilePath -> io()
 replacePlaceholderText componentName =
   inplace ("COMPONENT" *> pure componentName)

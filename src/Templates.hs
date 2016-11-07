@@ -20,6 +20,29 @@ componentTemplate = Template "COMPONENT.js" [s|
 */
 
 import React, {PropTypes} from 'react';
+import {render} from 'react-dom';
+
+const COMPONENT = ({}) => (
+  <div>
+  </div>
+);
+
+COMPONENT.PropTypes = {
+};
+
+export default COMPONENT;
+|]
+
+nativeComponentTemplate :: Template
+nativeComponentTemplate = Template "COMPONENT.js" [s|
+// @flow
+/*
+   NOTE: This file was auto-generated for a component
+   named "COMPONENT"; it is intended to be modified as
+   needed to be useful.
+*/
+
+import React, {PropTypes} from 'react';
 import {View} from 'react-native';
 
 import styles from './styles';
