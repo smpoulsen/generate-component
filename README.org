@@ -11,13 +11,13 @@
      stack install
      # ... Output omitted for brevity ... #
      Copied executables to $HOME/.local/bin:
-     - componentGenerator
+     - generate-component
 
 
-     ~/.local/bin/componentGenerator -h
+     ~/.local/bin/generate-component -h
      Component generator
 
-     Usage: componentGenerator NAME [-d|--component-directory DIR]
+     Usage: generate-component NAME [-d|--component-directory DIR]
                                [-c|--make-container] [-n|--react-native]
 
      Available options:
@@ -30,7 +30,7 @@
 
 *** Generating a React component:
    #+BEGIN_SRC sh
-     ~/.local/bin/componentGenerator Test
+     ~/.local/bin/generate-component Test
      Making directory at: ./app/components/Test
      Copying files...
      Writing ./app/components/Test/Test.js...
@@ -41,7 +41,7 @@
 
 *** Generating a React component in an arbitrary directory:
    #+BEGIN_SRC sh
-     ~/.local/bin/componentGenerator -d dir Test
+     ~/.local/bin/generate-component -d dir Test
      Making directory at: dir/Test
      Copying files...
      Writing dir/Test/Test.js...
@@ -51,7 +51,7 @@
 
 *** Generating a React Native component:
    #+BEGIN_SRC sh
-     ~/.local/bin/componentGenerator -cn Test
+     ~/.local/bin/generate-component -cn Test
      Making directory at: ./app/components/Test
      Copying files...
      Writing ./app/components/Test/TestContainer.js...
@@ -63,7 +63,7 @@
 
 *** Generating a component with a Redux container (works for React and React Native components):
    #+BEGIN_SRC sh
-     ~/.local/bin/componentGenerator -cn Test
+     ~/.local/bin/generate-component -cn Test
      Making directory at: ./app/components/Test
      Copying files...
      Writing ./app/components/Test/TestContainer.js...
@@ -75,7 +75,7 @@
 
 *** Attempting to generate a component that already exists:
    #+BEGIN_SRC sh
-     ~/.local/bin/componentGenerator -cn Test
+     ~/.local/bin/generate-component -cn Test
      Component directory exists; exiting without action.
      Done
    #+END_SRC
