@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                componentGenerator
-version:             0.1.1.0
+version:             0.2.0.0
 synopsis:            Generate scaffolds for react native components.
 -- description:         
 license:             BSD3
@@ -15,7 +15,7 @@ build-type:          Simple
 extra-source-files:  ChangeLog.md
 cabal-version:       >=1.10
 
-executable componentGenerator
+executable generate-component
   main-is:             Main.hs
   other-modules:       Templates
   -- other-extensions:    
