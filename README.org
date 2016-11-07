@@ -1,10 +1,14 @@
 * React Component Generator
 
 ** Installation
-   Easiest with stack:
+   You should have [[https://www.haskell.org/ghc/][GHC]] and [[https://www.haskell.org/cabal/][cabal]] or [[https://docs.haskellstack.org/en/stable/README/][stack]] installed.
+
+   Installing `generate-component` is easiest with stack:
    #+BEGIN_SRC sh
    stack install
    #+END_SRC
+
+   This compiles the program and puts the executable in ~/.local/bin~. If this is in your path, you now have the command `generate-component`.
 
 ** Usage
    #+BEGIN_SRC sh
@@ -51,10 +55,9 @@
 
 *** Generating a React Native component:
    #+BEGIN_SRC sh
-     ~/.local/bin/generate-component -cn Test
+     ~/.local/bin/generate-component -n Test
      Making directory at: ./app/components/Test
      Copying files...
-     Writing ./app/components/Test/TestContainer.js...
      Writing ./app/components/Test/Test.js...
      Writing ./app/components/Test/styles.js...
      Writing ./app/components/Test/index.js...
@@ -63,7 +66,7 @@
 
 *** Generating a component with a Redux container (works for React and React Native components):
    #+BEGIN_SRC sh
-     ~/.local/bin/generate-component -cn Test
+     ~/.local/bin/generate-component -c Test
      Making directory at: ./app/components/Test
      Copying files...
      Writing ./app/components/Test/TestContainer.js...
@@ -75,7 +78,7 @@
 
 *** Attempting to generate a component that already exists:
    #+BEGIN_SRC sh
-     ~/.local/bin/generate-component -cn Test
+     ~/.local/bin/generate-component Test
      Component directory exists; exiting without action.
      Done
    #+END_SRC
