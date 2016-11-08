@@ -85,12 +85,13 @@ determineTemplatesToGenerate settings =
         nativeTemplates = [nativeComponentTemplate, stylesTemplate, indexTemplate]
 
 {--| Generates the component's path, writes the file, and replaces the placeholder text with the template name. --}
-generateComponent :: Settings -> Template -> IO ()
+generateComponent :: Settings -> Template -> IO OSFilePath
 generateComponent settings template =
-  writeTemplateFile (componentPath </> fromText sanitizedFileName) (contents template) >>= replacePlaceholder
+  writeTemplateFile (componentPath </> fromText sanitizedFileName) sanitizedTemplate
   where componentPath = (settings ^. sComponentDir) </> fromText componentName
         componentName = settings ^. sComponentName
-        sanitizedFileName = replace "COMPONENT" componentName (filename template)
+        sanitizedFileName = replacePlaceholder (filename template)
+        sanitizedTemplate = replacePlaceholder (contents template)
         replacePlaceholder = replacePlaceholderText componentName
 
 
@@ -101,10 +102,9 @@ writeTemplateFile dest src = do
   writeTextFile dest src
   return dest
 
-{--| Replaces the text "COMPONENT" in the template file with the component name. --}
-replacePlaceholderText :: MonadIO io => Text -> OSFilePath -> io()
-replacePlaceholderText componentName =
-  inplace ("COMPONENT" *> pure componentName)
+replacePlaceholderText :: Text -> Text -> Text
+replacePlaceholderText =
+  replace "COMPONENT"
 
 {--| Testing --}
 instance Arbitrary Settings where
