@@ -1,15 +1,21 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 {-| A generator for React Native components.
  -| Travis Poulsen - 2016
 -}
 module Main where
 
+import           Control.Lens
 import           Control.Monad.IO.Class    (MonadIO)
+import           Data.Char                 (chr)
 import           Data.Monoid               ((<>))
 import           Data.Text                 (pack, replace)
-import           Filesystem.Path.CurrentOS (FilePath, fromText, (</>))
+import           Filesystem.Path.CurrentOS (FilePath, fromText, valid, (</>))
 import           Options.Applicative
 import           Templates
+import           Test.QuickCheck           (Gen, choose, listOf1, oneof, suchThat)
+import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
+import           Test.QuickCheck.Instances ()
 import           Turtle                    (Text)
 import           Turtle.Format
 import           Turtle.Options            (options)
@@ -17,11 +23,12 @@ import           Turtle.Prelude
 
 type OSFilePath = Filesystem.Path.CurrentOS.FilePath
 data Settings = Settings
-  { sComponentName :: Text
-  , sComponentDir  :: OSFilePath
-  , sMakeContainer :: Bool
-  , sReactNative   :: Bool
+  { _sComponentName :: Text
+  , _sComponentDir  :: OSFilePath
+  , _sMakeContainer :: Bool
+  , _sReactNative   :: Bool
   } deriving (Eq, Show, Ord)
+makeLenses ''Settings
 
 main :: IO ()
 main = do
@@ -32,7 +39,7 @@ main = do
 {--| Command line argument parser --}
 parser :: Parser Settings
 parser = Settings <$>
-      fmap pack (argument str (metavar "NAME"))
+      fmap pack (Options.Applicative.argument str (metavar "NAME"))
       <*> fmap (fromText . pack) (strOption
         ( long "component-directory"
        <> short 'd'
@@ -72,8 +79,8 @@ determineTemplatesToGenerate settings =
           | otherwise     -> nativeTemplates
     False | makeContainer -> containerTemplate : reactTemplates
           | otherwise     -> reactTemplates
-  where makeReactNative = sReactNative settings
-        makeContainer   = sMakeContainer settings
+  where makeReactNative = settings ^. sReactNative
+        makeContainer   = settings ^. sMakeContainer
         reactTemplates  = [componentTemplate, indexTemplate]
         nativeTemplates = [nativeComponentTemplate, stylesTemplate, indexTemplate]
 
@@ -81,8 +88,8 @@ determineTemplatesToGenerate settings =
 generateComponent :: Settings -> Template -> IO ()
 generateComponent settings template =
   writeTemplateFile (componentPath </> fromText sanitizedFileName) (contents template) >>= replacePlaceholder
-  where componentPath = sComponentDir settings </> fromText componentName
-        componentName = sComponentName settings
+  where componentPath = (settings ^. sComponentDir) </> fromText componentName
+        componentName = settings ^. sComponentName
         sanitizedFileName = replace "COMPONENT" componentName (filename template)
         replacePlaceholder = replacePlaceholderText componentName
 
@@ -98,3 +105,26 @@ writeTemplateFile dest src = do
 replacePlaceholderText :: MonadIO io => Text -> OSFilePath -> io()
 replacePlaceholderText componentName =
   inplace ("COMPONENT" *> pure componentName)
+
+{--| Testing --}
+instance Arbitrary Settings where
+  arbitrary = Settings <$>
+        genComponentName
+    <*> genFilePath
+    <*> arbitrary
+    <*> arbitrary
+
+{--| Generate a filepath using characters 0-9 and A-z --}
+genFilePath :: Gen OSFilePath
+genFilePath = arbitraryFilePath `suchThat` valid
+  where arbitraryFilePath = fromText <$> genText
+
+genComponentName :: Gen Text
+genComponentName = genText `suchThat` (valid . fromText)
+
+genText :: Gen Text
+genText = pack <$> listOf1 validChars
+  where validChars = chr <$> oneof [genNums, genLowerCase, genUpperCase]
+        genNums = choose (48, 57)
+        genLowerCase = choose (97, 122)
+        genUpperCase = choose (65, 90)
