@@ -8,7 +8,7 @@ import           Data.Text      (Text)
 data Template = Template
   { filename :: Text
   , contents :: Text
-  }
+  } deriving (Show)
 
 componentTemplate :: Template
 componentTemplate = Template "COMPONENT.js" [s|
