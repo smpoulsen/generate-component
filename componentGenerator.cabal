@@ -3,8 +3,8 @@
 
 name:                componentGenerator
 version:             0.2.0.0
-synopsis:            Generate scaffolds for react native components.
--- description:         
+synopsis:            Generate scaffolds for React components.
+description:         A generator for React and React Rative components.
 license:             BSD3
 license-file:        LICENSE
 author:              Travis Poulsen
@@ -14,6 +14,9 @@ category:            Development
 build-type:          Simple
 extra-source-files:  ChangeLog.md
 cabal-version:       >=1.10
+source-repository head
+  type:              git
+  location:          https://github.com/tpoulsen/generate-component
 
 executable generate-component
   main-is:             Main.hs
