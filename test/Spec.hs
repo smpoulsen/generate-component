@@ -1,16 +1,32 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module TestMain where
+module Main where
 
 import           Control.Lens              hiding (pre, (<.>))
 import           Data.Text                 (length)
-import           Filesystem.Path.CurrentOS (fromText, valid, (</>), (<.>))
+import           Filesystem.Path.CurrentOS (fromText, valid, (<.>), (</>))
 import           Prelude                   hiding (length)
 import           Test.QuickCheck
 import           Test.QuickCheck.Monadic
+import           Test.Tasty
+import           Test.Tasty.QuickCheck     as QC
 import           Turtle.Prelude            (testdir, testfile)
 
-import           Main
+import           ComponentGenerator
+import           Types
+
+main :: IO ()
+main = defaultMain tests
+
+tests :: TestTree
+tests = testGroup "Tests" [properties]
+
+properties :: TestTree
+properties = testGroup "Properties" [qcProps]
+
+qcProps = testGroup "(checked by QuickCheck)"
+  [ QC.testProperty "files are created" prop_makesFiles
+  ]
 
 runMakesFileProp :: IO ()
 runMakesFileProp = quickCheck prop_makesFiles
