@@ -7,11 +7,9 @@ module ComponentGenerator where
 import           Control.Lens
 import           Data.Text                 (replace)
 import           Filesystem.Path.CurrentOS (fromText, (</>))
-import           Parser
 import           Templates
 import           Turtle                    (Text)
 import           Turtle.Format
-import           Turtle.Options            (options)
 import           Turtle.Prelude
 import           Types
 
@@ -35,14 +33,14 @@ generateDesiredTemplates settings@(Settings componentName componentPath' _contai
 determineTemplatesToGenerate :: Settings -> [Template]
 determineTemplatesToGenerate settings =
   case makeReactNative of
-    True  | makeContainer -> containerTemplate : nativeTemplates
-          | otherwise     -> nativeTemplates
-    False | makeContainer -> containerTemplate : reactTemplates
-          | otherwise     -> reactTemplates
+    True  | makeContainer -> containerTemplate : containerIndexTemplate : nativeTemplates
+          | otherwise     -> indexTemplate : nativeTemplates
+    False | makeContainer -> containerTemplate : containerIndexTemplate : reactTemplates
+          | otherwise     -> indexTemplate : reactTemplates
   where makeReactNative = settings ^. sReactNative
         makeContainer   = settings ^. sMakeContainer
-        reactTemplates  = [componentTemplate, indexTemplate]
-        nativeTemplates = [nativeComponentTemplate, stylesTemplate, indexTemplate]
+        reactTemplates  = [componentTemplate]
+        nativeTemplates = [nativeComponentTemplate, stylesTemplate]
 
 {--| Generates the component's path, writes the file, and replaces the placeholder text with the template name. --}
 generateComponent :: Settings -> Template -> IO OSFilePath
