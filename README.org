@@ -85,3 +85,8 @@
 *** Note
    - DIR: an optional directory under which to create the component; defaults to ~./app/components/~
    - ~-c~: a flag that, if present, additionally generates a redux container component
+** Testing
+*** To run the tests:
+    #+BEGIN_SRC sh
+    stack test
+    #+END_SRC
