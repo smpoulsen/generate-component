@@ -54,6 +54,7 @@ test-suite test
                      , QuickCheck
                      , lens
                      , optparse-applicative >= 0.12
+                     , pcre-heavy
                      , quickcheck-instances
                      , string-qq
                      , system-filepath
