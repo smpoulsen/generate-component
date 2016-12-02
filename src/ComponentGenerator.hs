@@ -9,7 +9,7 @@ import           Data.Text                 (replace)
 import           Filesystem.Path.CurrentOS (fromText, (</>))
 import           Templates
 import           Turtle                    (Text)
-import           Turtle.Format
+import           Turtle.Format             (format, fp, printf, s, (%))
 import           Turtle.Prelude
 import           Types
 
@@ -56,8 +56,9 @@ generateComponent settings template =
 {--| Writes a file with the template's contents to a file named after the template's name. --}
 writeTemplateFile :: OSFilePath -> Text -> IO OSFilePath
 writeTemplateFile dest src = do
-  echo $ format ("Writing\t"%s%"...") (format fp dest)
+  printf ("Writing\t"%s) (format fp dest)
   writeTextFile dest src
+  echo "...Done!"
   return dest
 
 replacePlaceholderText :: Text -> Text -> Text

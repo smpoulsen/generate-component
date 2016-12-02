@@ -7,7 +7,7 @@ module Main where
 import           Control.Lens              hiding (pre, re, (<.>))
 import           Data.List
 import           Data.Maybe
-import           Data.Text                 (length)
+import           Data.Text                 (length, Text)
 import           Filesystem.Path.CurrentOS (fromText, valid, (<.>), (</>))
 import           Prelude                   hiding (length)
 import           Test.QuickCheck
@@ -34,16 +34,13 @@ qcProps = testGroup "(checked by QuickCheck)"
   , QC.testProperty "placeholder text is replaced with the component name" prop_generatedComponentHasComponentName
   ]
 
-runMakesFileProp :: IO ()
-runMakesFileProp = quickCheck prop_makesFiles
-
 prop_makesFiles :: Settings -> Property
 prop_makesFiles settings@(Settings componentName componentPath _container _native) = monadicIO $ do
   let componentNamePath = fromText componentName
   let tmpDir = "/tmp" </> (settings ^. sComponentDir)
   let componentDir = tmpDir </> componentNamePath
 
-  pre (Data.Text.length componentName > 1 && valid componentPath && valid componentNamePath)
+  pre $ componentSettingsValid componentName componentPath
   run $ makeFiles settings
 
   dirExists <- testdir componentDir
@@ -58,7 +55,7 @@ prop_generatedComponentHasComponentName settings@(Settings componentName compone
   let tmpDir = "/tmp" </> (settings ^. sComponentDir)
   let componentDir = tmpDir </> componentNamePath
 
-  pre (Data.Text.length componentName > 1 && valid componentPath && valid componentNamePath)
+  pre $ componentSettingsValid componentName componentPath
   run $ makeFiles settings
 
   component <- run $ readTextFile $ componentDir </> componentNamePath <.> "js"
@@ -73,3 +70,7 @@ makeFiles settings = do
   let tmpSettings = sComponentDir .~  tmpDir $ settings
 
   generateDesiredTemplates tmpSettings
+
+componentSettingsValid :: Text -> OSFilePath -> Bool
+componentSettingsValid componentName componentDirPath =
+  Data.Text.length componentName > 1 && valid componentDirPath && (valid $ fromText componentName)
