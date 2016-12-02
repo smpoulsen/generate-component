@@ -115,3 +115,10 @@ import COMPONENT from './COMPONENT';
 
 export default COMPONENT;
 |]
+
+containerIndexTemplate :: Template
+containerIndexTemplate = Template "index.js" [s|
+import COMPONENTContainer from './COMPONENTContainer';
+
+export default COMPONENTContainer;
+|]
