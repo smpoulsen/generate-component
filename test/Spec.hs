@@ -31,11 +31,11 @@ properties = testGroup "Properties" [qcProps]
 
 qcProps = testGroup "(checked by QuickCheck)"
   [ QC.testProperty "files are created" prop_makesFiles
-  , QC.testProperty "placeholder text is replaced with the component name" prop_generatedComponentHasComponentName
+  , QC.testProperty "placeholder text is replaced with the component name" prop_replacePlaceholderText
   ]
 
 prop_makesFiles :: Settings -> Property
-prop_makesFiles settings@(Settings componentName componentPath _container _native) = monadicIO $ do
+prop_makesFiles settings@(Settings componentName componentPath _container native) = monadicIO $ do
   let componentNamePath = fromText componentName
   let tmpDir = "/tmp" </> (settings ^. sComponentDir)
   let componentDir = tmpDir </> componentNamePath
@@ -44,13 +44,15 @@ prop_makesFiles settings@(Settings componentName componentPath _container _nativ
   run $ makeFiles settings
 
   dirExists <- testdir componentDir
-  filesExist <- mapM testfile $ (componentDir </>) <$> [componentNamePath <.> "js", "index.js"]
+  filesExist <- if native
+  then mapM testfile $ (componentDir </>) <$> [componentNamePath <.> "js", "index.js", "styles.js"]
+  else mapM testfile $ (componentDir </>) <$> [componentNamePath <.> "js", "index.js"]
 
   assert dirExists
   assert $ and filesExist
 
-prop_generatedComponentHasComponentName :: Settings -> Property
-prop_generatedComponentHasComponentName settings@(Settings componentName componentPath _container _native) = monadicIO $ do
+prop_replacePlaceholderText :: Settings -> Property
+prop_replacePlaceholderText settings@(Settings componentName componentPath _container _native) = monadicIO $ do
   let componentNamePath = fromText componentName
   let tmpDir = "/tmp" </> (settings ^. sComponentDir)
   let componentDir = tmpDir </> componentNamePath
@@ -59,9 +61,11 @@ prop_generatedComponentHasComponentName settings@(Settings componentName compone
   run $ makeFiles settings
 
   component <- run $ readTextFile $ componentDir </> componentNamePath <.> "js"
-  let stillHasPlaceholderText = component =~ [re|COMPONENT|]
+  index <- run $ readTextFile $ componentDir </> "index.js"
 
-  assert $ stillHasPlaceholderText == False
+  let placeholderTextReplaced = (=~ [re|COMPONENT|]) <$> [component, index]
+
+  assert $ and $ not <$> placeholderTextReplaced
 
 -- Setup/make files
 makeFiles :: Settings -> IO ()
