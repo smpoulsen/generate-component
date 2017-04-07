@@ -5,13 +5,13 @@
 module Main where
 
 import           ComponentGenerator
+import           Options.Applicative (execParser)
 import           Parser
-import           Turtle.Options     (options)
 import           Turtle.Prelude
 
 main :: IO ()
 main = do
-  settings <- options "Component generator" parser
+  settings <- execParser opts
   generateDesiredTemplates settings
   echo "Done"
 

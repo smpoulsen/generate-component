@@ -2,8 +2,8 @@
 {-# LANGUAGE QuasiQuotes       #-}
 module Templates where
 
-import           Data.String.QQ
-import           Data.Text      (Text)
+import           Data.Text                     (Text)
+import           Text.InterpolatedString.Perl6 (q, qc)
 
 data Template = Template
   { filename :: Text
@@ -11,7 +11,7 @@ data Template = Template
   } deriving (Show)
 
 componentTemplate :: Template
-componentTemplate = Template "COMPONENT.js" [s|
+componentTemplate = Template "COMPONENT.js" [q|
 // @flow
 /*
    NOTE: This file was auto-generated for a component
@@ -34,7 +34,7 @@ export default COMPONENT;
 |]
 
 nativeComponentTemplate :: Template
-nativeComponentTemplate = Template "COMPONENT.js" [s|
+nativeComponentTemplate = Template "COMPONENT.js" [q|
 // @flow
 /*
    NOTE: This file was auto-generated for a component
@@ -59,7 +59,7 @@ export default COMPONENT;
 |]
 
 containerTemplate :: Template
-containerTemplate = Template "COMPONENTContainer.js" [s|
+containerTemplate = Template "COMPONENTContainer.js" [q|
 // @flow
 /*
    NOTE: This file was auto-generated for a component
@@ -93,7 +93,7 @@ export default COMPONENTContainer;
 |]
 
 stylesTemplate :: Template
-stylesTemplate = Template "styles.js" [s|
+stylesTemplate = Template "styles.js" [q|
 // @flow
 /*
   NOTE: This file was auto-generated for a component
@@ -110,15 +110,30 @@ export default styles;
 |]
 
 indexTemplate :: Template
-indexTemplate = Template "index.js" [s|
+indexTemplate = Template "index.js" [q|
 import COMPONENT from './COMPONENT';
 
 export default COMPONENT;
 |]
 
 containerIndexTemplate :: Template
-containerIndexTemplate = Template "index.js" [s|
+containerIndexTemplate = Template "index.js" [q|
 import COMPONENTContainer from './COMPONENTContainer';
 
 export default COMPONENTContainer;
+|]
+
+configTemplate :: Template
+configTemplate = Template ".generate-component.yaml" [q|
+# Type of the current project; determines what files will be
+# generated for a component.
+# Valid values: react | react-native
+projectType: react-native
+
+# Default directory in which to generate components.
+defaultDirectory: app/components
+
+# Style of components to generate
+# Valid values: createClass | es6-class | functional
+componentType: functional
 |]

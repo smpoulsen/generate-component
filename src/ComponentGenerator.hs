@@ -15,6 +15,8 @@ import           Types
 
 {--| If the component doesn't already exist, creates component directory and requisite files. --}
 generateDesiredTemplates :: Settings -> IO ()
+generateDesiredTemplates GenConfig =
+  writeTextFile (fromText . filename $ configTemplate) (contents configTemplate)
 generateDesiredTemplates settings@(Settings componentName componentPath' _container _native) = do
   dirExists <- testdir componentPath
   if dirExists
@@ -37,8 +39,8 @@ determineTemplatesToGenerate settings =
           | otherwise     -> indexTemplate : nativeTemplates
     False | makeContainer -> containerTemplate : containerIndexTemplate : reactTemplates
           | otherwise     -> indexTemplate : reactTemplates
-  where makeReactNative = settings ^. sReactNative
-        makeContainer   = settings ^. sMakeContainer
+  where makeReactNative = _sReactNative settings
+        makeContainer   = _sMakeContainer settings
         reactTemplates  = [componentTemplate]
         nativeTemplates = [nativeComponentTemplate, stylesTemplate]
 

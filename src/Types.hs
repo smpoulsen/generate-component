@@ -17,7 +17,8 @@ data Settings = Settings
   , _sComponentDir  :: OSFilePath
   , _sMakeContainer :: Bool
   , _sReactNative   :: Bool
-  } deriving (Eq, Show, Ord)
+  } | GenConfig
+  deriving (Eq, Show, Ord)
 makeLenses ''Settings
 
 {--| Testing --}

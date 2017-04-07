@@ -27,10 +27,10 @@ executable generate-component
   -- other-extensions:    
   build-depends:       base >=4.9 && <4.10
                      , QuickCheck
+                     , interpolatedstring-perl6
                      , lens
                      , optparse-applicative >= 0.12
                      , quickcheck-instances
-                     , string-qq
                      , system-filepath
                      , tasty
                      , tasty-quickcheck
@@ -52,10 +52,10 @@ test-suite test
                      , Types
   build-depends:       base >= 4 && < 5
                      , QuickCheck
+                     , interpolatedstring-perl6
                      , lens
                      , optparse-applicative >= 0.12
                      , quickcheck-instances
-                     , string-qq
                      , system-filepath
                      , tasty >= 0.7
                      , tasty-quickcheck
