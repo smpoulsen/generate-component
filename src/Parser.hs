@@ -2,6 +2,7 @@
 
 module Parser where
 
+import           Data.Monoid               ((<>))
 import           Data.Text                 (pack)
 import           Filesystem.Path.CurrentOS (fromText)
 import           Options.Applicative

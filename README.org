@@ -1,4 +1,5 @@
 * React Component Generator
+  [[https://travis-ci.org/tpoulsen/generate-component][https://travis-ci.org/tpoulsen/generate-component.svg?branch=master]]
 
 ** Installation
    You should have [[https://www.haskell.org/ghc/][GHC]] and [[https://www.haskell.org/cabal/][cabal]] or [[https://docs.haskellstack.org/en/stable/README/][stack]] installed.
