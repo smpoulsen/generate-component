@@ -21,6 +21,7 @@ source-repository head
 executable generate-component
   main-is:             Main.hs
   other-modules:       ComponentGenerator
+                     , Config
                      , Parser
                      , Templates
                      , Types

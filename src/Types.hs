@@ -12,6 +12,7 @@ import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
 import           Test.QuickCheck.Instances ()
 
 type OSFilePath = Filesystem.Path.CurrentOS.FilePath
+
 data Settings = Settings
   { _sComponentName :: Text
   , _sComponentDir  :: OSFilePath
