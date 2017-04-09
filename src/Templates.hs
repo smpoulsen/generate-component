@@ -127,13 +127,13 @@ configTemplate :: Template
 configTemplate = Template ".generate-component.yaml" [q|
 # Type of the current project; determines what files will be
 # generated for a component.
-# Valid values: react | react-native
-projectType: react-native
+# Valid values: React | ReactNative
+projectType: ReactNative
 
 # Default directory in which to generate components.
 defaultDirectory: app/components
 
 # Style of components to generate
-# Valid values: createClass | es6-class | functional
-componentType: functional
+# Valid values: CreateClass | ES6Class | Functional
+componentType: Functional
 |]

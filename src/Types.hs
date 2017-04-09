@@ -1,17 +1,43 @@
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
 
 module Types where
 
 import           Control.Lens
+import           Data.Aeson                (decode, withObject)
 import           Data.Char                 (chr)
 import           Data.Text
+import           Data.Yaml                 (FromJSON, ToJSON, parseJSON, (.:))
 import           Filesystem.Path.CurrentOS (FilePath, fromText, valid)
-import           Test.QuickCheck           (Gen, choose, listOf1, oneof, suchThat)
+import           GHC.Generics
+import           Test.QuickCheck           (Gen, choose, listOf1, oneof,
+                                            suchThat)
 import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
 import           Test.QuickCheck.Instances ()
 
 type OSFilePath = Filesystem.Path.CurrentOS.FilePath
+
+data ProjectType = React | ReactNative deriving (Generic, Show)
+instance ToJSON ProjectType
+instance FromJSON ProjectType
+
+data ComponentType = ES6Class | CreateClass | Functional deriving (Generic, Show)
+instance ToJSON ComponentType
+instance FromJSON ComponentType
+
+data Config = Config
+  { _projectType      :: ProjectType
+  , _componentType    :: ComponentType
+  , _defaultDirectory :: Text
+  } deriving (Generic, Show)
+makeLenses ''Config
+instance FromJSON Config where
+  parseJSON = withObject "Config" $ \v -> Config
+    <$> v .: "projectType"
+    <*> v .: "componentType"
+    <*> v .: "defaultDirectory"
+
 
 data Settings = Settings
   { _sComponentName :: Text

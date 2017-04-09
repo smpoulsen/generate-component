@@ -28,6 +28,7 @@ executable generate-component
   -- other-extensions:    
   build-depends:       base >=4.9 && <4.10
                      , QuickCheck
+                     , aeson
                      , interpolatedstring-perl6
                      , lens
                      , optparse-applicative >= 0.12
@@ -37,6 +38,7 @@ executable generate-component
                      , tasty-quickcheck
                      , text
                      , turtle == 1.2.8
+                     , yaml
   hs-source-dirs:      src
   default-language:    Haskell2010
 
@@ -53,6 +55,7 @@ test-suite test
                      , Types
   build-depends:       base >= 4 && < 5
                      , QuickCheck
+                     , aeson
                      , interpolatedstring-perl6
                      , lens
                      , optparse-applicative >= 0.12
@@ -62,3 +65,4 @@ test-suite test
                      , tasty-quickcheck
                      , text
                      , turtle == 1.2.8
+                     , yaml
