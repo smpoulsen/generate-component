@@ -2,7 +2,8 @@
 
 module Config where
 
-import           Filesystem.Path.CurrentOS (parent, (</>))
+import           Data.Yaml                 (ParseException, decodeFileEither)
+import           Filesystem.Path.CurrentOS (encodeString, parent, (</>))
 import           Turtle.Prelude
 import           Types
 
@@ -28,3 +29,9 @@ recurseUp dir =
 hasNodeModules :: OSFilePath -> IO Bool
 hasNodeModules dir =
   testdir $ dir </> "node_modules"
+
+readConfig :: IO (Either ParseException Config)
+readConfig = do
+  rootDir <- projectRoot
+  let configPath = rootDir </> ".generate-component.yaml" :: OSFilePath
+  decodeFileEither $ encodeString configPath
