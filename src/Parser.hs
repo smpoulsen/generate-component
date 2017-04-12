@@ -30,7 +30,7 @@ settingsParser = Settings <$>
         ( long "make-container"
        <> short 'c'
        <> help "Create a container component" )
-      <*> switch
+      <*> flag React ReactNative
         ( long "react-native"
        <> short 'n'
        <> help "Create a React Native component" )

@@ -39,7 +39,7 @@ determineTemplatesToGenerate settings =
           | otherwise     -> indexTemplate : nativeTemplates
     False | makeContainer -> containerTemplate : containerIndexTemplate : reactTemplates
           | otherwise     -> indexTemplate : reactTemplates
-  where makeReactNative = _sReactNative settings
+  where makeReactNative = _sReactNative settings == ReactNative
         makeContainer   = _sMakeContainer settings
         reactTemplates  = [componentTemplate]
         nativeTemplates = [nativeComponentTemplate, stylesTemplate]
