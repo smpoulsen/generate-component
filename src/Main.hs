@@ -5,6 +5,7 @@
 module Main where
 
 import           ComponentGenerator
+import           Config
 import           Options.Applicative (execParser)
 import           Parser
 import           Turtle.Prelude
@@ -12,7 +13,8 @@ import           Turtle.Prelude
 main :: IO ()
 main = do
   settings <- execParser opts
-  generateDesiredTemplates settings
+  configFile <- readConfig
+  generateDesiredTemplates $ mergeConfig configFile settings
   echo "Done"
 
 

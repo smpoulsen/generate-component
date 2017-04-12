@@ -2,8 +2,10 @@
 
 module Config where
 
+import           Control.Lens              ((&), (.~), (^.))
 import           Data.Yaml                 (ParseException, decodeFileEither)
-import           Filesystem.Path.CurrentOS (encodeString, parent, (</>))
+import           Filesystem.Path.CurrentOS (encodeString, fromText, parent,
+                                            (</>))
 import           Turtle.Prelude
 import           Types
 
@@ -35,3 +37,13 @@ readConfig = do
   rootDir <- projectRoot
   let configPath = rootDir </> ".generate-component.yaml" :: OSFilePath
   decodeFileEither $ encodeString configPath
+
+mergeConfig :: Either ParseException Config -> Settings -> Settings
+mergeConfig (Right c) s =
+  s & sProjectType .~ (c ^. projectType)
+    & sComponentDir .~ dir
+  where
+    dir = if (s ^. sComponentDir) == "./app/components"
+          then fromText $ c ^. defaultDirectory
+          else s ^. sComponentDir
+mergeConfig _ s = s

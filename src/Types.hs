@@ -45,7 +45,7 @@ data Settings = Settings
   { _sComponentName :: Text
   , _sComponentDir  :: OSFilePath
   , _sMakeContainer :: Bool
-  , _sReactNative   :: ProjectType
+  , _sProjectType   :: ProjectType
   } | GenConfig
   deriving (Eq, Show, Ord)
 makeLenses ''Settings
