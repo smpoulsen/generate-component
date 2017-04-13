@@ -24,8 +24,8 @@ settingsParser = Settings <$>
         ( long "component-directory"
        <> short 'd'
        <> metavar "DIR"
-       <> value "./app/components"
-       <> help "Directory to add the component" ))
+       <> value "."
+       <> help "Directory in which to add the component. Relative to the project root." ))
       <*> switch
         ( long "make-container"
        <> short 'c'

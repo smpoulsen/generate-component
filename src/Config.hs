@@ -43,7 +43,7 @@ mergeConfig (Right c) s =
   s & sProjectType .~ (c ^. projectType)
     & sComponentDir .~ dir
   where
-    dir = if (s ^. sComponentDir) == "./app/components"
+    dir = if (s ^. sComponentDir) == "."
           then fromText $ c ^. defaultDirectory
           else s ^. sComponentDir
 mergeConfig _ s = s

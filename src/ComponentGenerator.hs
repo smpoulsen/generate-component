@@ -4,6 +4,7 @@
 -}
 module ComponentGenerator where
 
+import           Config                    (projectRoot)
 import           Control.Lens
 import           Data.Text                 (replace)
 import           Filesystem.Path.CurrentOS (fromText, (</>))
@@ -18,6 +19,11 @@ generateDesiredTemplates :: Settings -> IO ()
 generateDesiredTemplates GenConfig =
   writeTextFile (fromText . filename $ configTemplate) (contents configTemplate)
 generateDesiredTemplates settings@(Settings componentName componentPath' _container _native) = do
+  appRoot <- projectRoot
+  let componentPath = appRoot </> componentPath' </> componentNamePath
+  let settings' = settings & sComponentDir .~ componentPath
+  let componentGenerator = generateComponent settings'
+  let runGenerator = mapM_ componentGenerator
   dirExists <- testdir componentPath
   if dirExists
     then echo "Component directory exists; exiting without action."
@@ -25,11 +31,8 @@ generateDesiredTemplates settings@(Settings componentName componentPath' _contai
       echo $ format ("Making directory at: "%s%"") (format fp componentPath)
       mktree componentPath
       echo "Copying files..."
-      runGenerator $ determineTemplatesToGenerate settings
-  where componentPath = componentPath' </> componentNamePath
-        componentNamePath = fromText componentName
-        componentGenerator = generateComponent settings
-        runGenerator = mapM_ componentGenerator
+      runGenerator $ determineTemplatesToGenerate settings'
+  where componentNamePath = fromText componentName
 
 {--| Determines which templates to create based on command line arguments. --}
 determineTemplatesToGenerate :: Settings -> [Template]
@@ -48,7 +51,7 @@ determineTemplatesToGenerate settings =
 generateComponent :: Settings -> Template -> IO OSFilePath
 generateComponent settings template =
   writeTemplateFile (componentPath </> fromText sanitizedFileName) sanitizedTemplate
-  where componentPath = (settings ^. sComponentDir) </> fromText componentName
+  where componentPath = settings ^. sComponentDir
         componentName = settings ^. sComponentName
         sanitizedFileName = replacePlaceholder (filename template)
         sanitizedTemplate = replacePlaceholder (contents template)
