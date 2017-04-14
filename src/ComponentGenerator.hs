@@ -8,9 +8,7 @@ import           Config                    (projectRoot)
 import           Control.Lens
 import           Data.Text                 (replace)
 import           Filesystem.Path.CurrentOS (fromText, (</>))
-import           Templates.Components
-import           Templates.Styles
-import           Templates.Containers
+import           Templates
 import           Turtle                    (Text)
 import           Turtle.Format
 import           Turtle.Prelude
@@ -37,15 +35,7 @@ generateDesiredTemplates settings@(Settings componentName componentPath' _contai
 {--| Determines which templates to create based on command line arguments. --}
 determineTemplatesToGenerate :: Settings -> [Template]
 determineTemplatesToGenerate settings =
-  case makeReactNative of
-    True  | makeContainer -> containerTemplate : containerIndexTemplate : nativeTemplates
-          | otherwise     -> indexTemplate : nativeTemplates
-    False | makeContainer -> containerTemplate : containerIndexTemplate : reactTemplates
-          | otherwise     -> indexTemplate : reactTemplates
-  where makeReactNative = _sProjectType settings == ReactNative
-        makeContainer   = _sMakeContainer settings
-        reactTemplates  = [componentTemplate]
-        nativeTemplates = [nativeComponentTemplate, stylesTemplate]
+  templatesToGenerate (settings ^. sProjectType) (settings ^. sMakeContainer)
 
 {--| Generates the component's path, writes the file, and replaces the placeholder text with the template name. --}
 generateComponent :: Settings -> Template -> IO OSFilePath

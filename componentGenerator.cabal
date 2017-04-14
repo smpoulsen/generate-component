@@ -23,6 +23,7 @@ executable generate-component
   other-modules:       ComponentGenerator
                      , Config
                      , Parser
+                     , Templates
                      , Templates.Config
                      , Templates.Components
                      , Templates.Containers
@@ -55,6 +56,7 @@ test-suite test
   other-modules:       ComponentGenerator
                      , Config
                      , Parser
+                     , Templates
                      , Templates.Config
                      , Templates.Components
                      , Templates.Containers

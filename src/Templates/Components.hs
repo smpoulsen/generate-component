@@ -13,8 +13,8 @@ import COMPONENT from './COMPONENT';
 export default COMPONENT;
 |]
 
-componentTemplate :: Template
-componentTemplate = Template "COMPONENT.js" [q|
+reactComponentTemplate :: Template
+reactComponentTemplate = Template "COMPONENT.js" [q|
 // @flow
 /*
    NOTE: This file was auto-generated for a component
