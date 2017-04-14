@@ -19,17 +19,7 @@ main :: IO ()
 main = do
   command <- execParser opts
   case command of
-    Init -> do
-      appRoot <- projectRoot
-      let configLocation = appRoot </> (fromText . filename $ configTemplate)
-      dirExists <- testfile configLocation
-      if dirExists
-        then echo $ filePathToText configLocation <> " already exists; exiting without action."
-      else do
-        echo "Writing config file:"
-        echo $ contents configTemplate
-        writeTextFile configLocation  (contents configTemplate)
-        echo $ "Config generated at " <> filePathToText configLocation
+    Init -> initializeWithConfigFile
     Generate settings -> do
       configFile <- readConfig
       generateDesiredTemplates $ mergeConfig configFile settings
@@ -37,3 +27,16 @@ main = do
 
 filePathToText :: OSFilePath -> Text
 filePathToText = pack . encodeString
+
+initializeWithConfigFile :: IO ()
+initializeWithConfigFile = do
+  appRoot <- projectRoot
+  let configLocation = appRoot </> (fromText . filename $ configTemplate)
+  dirExists <- testfile configLocation
+  if dirExists
+    then echo $ filePathToText configLocation <> " already exists; exiting without action."
+  else do
+    echo "Writing config file:"
+    echo $ contents configTemplate
+    writeTextFile configLocation  (contents configTemplate)
+    echo $ "Config generated at " <> filePathToText configLocation
