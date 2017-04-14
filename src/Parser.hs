@@ -8,17 +8,16 @@ import           Options.Applicative
 import           Types
 
 {--| Command line argument parser --}
-parser :: Parser Settings
-parser = settingsParser <|> configParser
+commandParser :: Parser Command
+commandParser = subparser $
+     command "init" (info initParser $ progDesc "Create a config file")
+  <> command "gen" (info settingsParser $ progDesc "Generate a component")
 
-configParser :: Parser Settings
-configParser = flag' GenConfig
-      ( long "generate-config"
-      <> short 'g'
-      <> help "Create a config file to specify project defaults; this should be in the project root" )
+initParser :: Parser Command
+initParser = pure Init
 
-settingsParser :: Parser Settings
-settingsParser = Settings <$>
+settingsParser :: Parser Command
+settingsParser = fmap Generate $ Settings <$>
       fmap pack (Options.Applicative.argument str (metavar "NAME"))
       <*> fmap (fromText . pack) (strOption
         ( long "component-directory"
@@ -35,8 +34,8 @@ settingsParser = Settings <$>
        <> short 'n'
        <> help "Create a React Native component" )
 
-opts :: ParserInfo Settings
-opts = info (parser <**> helper)
+opts :: ParserInfo Command
+opts = info (commandParser <**> helper)
   ( fullDesc
   <> progDesc "Generate React/React-Native components"
   <> header "Flexible generator for React/React-Native components" )

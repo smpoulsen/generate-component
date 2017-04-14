@@ -16,8 +16,6 @@ import           Types
 
 {--| If the component doesn't already exist, creates component directory and requisite files. --}
 generateDesiredTemplates :: Settings -> IO ()
-generateDesiredTemplates GenConfig =
-  writeTextFile (fromText . filename $ configTemplate) (contents configTemplate)
 generateDesiredTemplates settings@(Settings componentName componentPath' _container _native) = do
   appRoot <- projectRoot
   let componentPath = appRoot </> componentPath' </> componentNamePath

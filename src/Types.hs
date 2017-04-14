@@ -15,6 +15,7 @@ import           Test.QuickCheck           (Gen, choose, elements, listOf1,
                                             oneof, suchThat)
 import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
 import           Test.QuickCheck.Instances ()
+import Options.Applicative (Parser)
 
 type OSFilePath = Filesystem.Path.CurrentOS.FilePath
 
@@ -46,9 +47,15 @@ data Settings = Settings
   , _sComponentDir  :: OSFilePath
   , _sMakeContainer :: Bool
   , _sProjectType   :: ProjectType
-  } | GenConfig
+  }
   deriving (Eq, Show, Ord)
 makeLenses ''Settings
+
+type CSettings = Settings
+
+data Command =
+    Init
+  | Generate CSettings
 
 {--| Testing --}
 instance Arbitrary Settings where
