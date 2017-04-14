@@ -11,7 +11,7 @@ import           Data.Text                 (Text, pack)
 import           Filesystem.Path.CurrentOS (encodeString, fromText, (</>))
 import           Options.Applicative       (execParser)
 import           Parser
-import           Templates
+import           Templates.Config
 import           Turtle.Prelude
 import           Types
 

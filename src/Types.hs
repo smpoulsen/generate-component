@@ -11,11 +11,16 @@ import           Data.Text
 import           Data.Yaml                 (FromJSON, ToJSON, parseJSON, (.:))
 import           Filesystem.Path.CurrentOS (FilePath, fromText, valid)
 import           GHC.Generics
+import           Options.Applicative       (Parser)
 import           Test.QuickCheck           (Gen, choose, elements, listOf1,
                                             oneof, suchThat)
 import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
 import           Test.QuickCheck.Instances ()
-import Options.Applicative (Parser)
+
+data Template = Template
+  { filename :: Text
+  , contents :: Text
+  } deriving (Show)
 
 type OSFilePath = Filesystem.Path.CurrentOS.FilePath
 

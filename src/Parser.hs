@@ -26,9 +26,9 @@ settingsParser = fmap Generate $ Settings <$>
        <> value "."
        <> help "Directory in which to add the component. Relative to the project root." ))
       <*> switch
-        ( long "make-container"
-       <> short 'c'
-       <> help "Create a container component" )
+        ( long "redux-container"
+       <> short 'r'
+       <> help "Create a redux connected container component" )
       <*> flag React ReactNative
         ( long "react-native"
        <> short 'n'

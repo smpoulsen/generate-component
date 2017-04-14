@@ -8,7 +8,9 @@ import           Config                    (projectRoot)
 import           Control.Lens
 import           Data.Text                 (replace)
 import           Filesystem.Path.CurrentOS (fromText, (</>))
-import           Templates
+import           Templates.Components
+import           Templates.Styles
+import           Templates.Containers
 import           Turtle                    (Text)
 import           Turtle.Format
 import           Turtle.Prelude

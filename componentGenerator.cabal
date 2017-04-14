@@ -23,7 +23,10 @@ executable generate-component
   other-modules:       ComponentGenerator
                      , Config
                      , Parser
-                     , Templates
+                     , Templates.Config
+                     , Templates.Components
+                     , Templates.Containers
+                     , Templates.Styles
                      , Types
   -- other-extensions:    
   build-depends:       base >=4.9 && <4.10
@@ -50,8 +53,12 @@ test-suite test
                      , test
   main-is:             Spec.hs
   other-modules:       ComponentGenerator
+                     , Config
                      , Parser
-                     , Templates
+                     , Templates.Config
+                     , Templates.Components
+                     , Templates.Containers
+                     , Templates.Styles
                      , Types
   build-depends:       base >= 4 && < 5
                      , QuickCheck

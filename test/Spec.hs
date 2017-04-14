@@ -24,6 +24,7 @@ tests = testGroup "Tests" [properties]
 properties :: TestTree
 properties = testGroup "Properties" [qcProps]
 
+qcProps :: TestTree
 qcProps = testGroup "(checked by QuickCheck)"
   [ QC.testProperty "files are created" prop_makesFiles
   ]
