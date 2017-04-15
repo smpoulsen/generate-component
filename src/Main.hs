@@ -6,6 +6,7 @@ module Main where
 
 import           ComponentGenerator
 import           Config
+import           Control.Lens              (over)
 import           Data.Monoid               ((<>))
 import           Data.Text                 (Text, pack)
 import           Filesystem.Path.CurrentOS (encodeString, fromText, (</>))
@@ -22,7 +23,8 @@ main = do
     Init -> initializeWithConfigFile
     Generate settings -> do
       configFile <- readConfig
-      generateDesiredTemplates $ mergeConfig configFile settings
+      appRoot <- projectRoot
+      generateDesiredTemplates $ over sComponentDir (fmap (appRoot </>)) $ mergeConfig configFile settings
   echo "Done"
 
 filePathToText :: OSFilePath -> Text

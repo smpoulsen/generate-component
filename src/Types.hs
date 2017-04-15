@@ -49,7 +49,7 @@ instance FromJSON Config where
 
 data Settings = Settings
   { _sComponentName :: Text
-  , _sComponentDir  :: OSFilePath
+  , _sComponentDir  :: Maybe OSFilePath
   , _sMakeContainer :: Bool
   , _sProjectType   :: ProjectType
   }
@@ -66,7 +66,7 @@ data Command =
 instance Arbitrary Settings where
   arbitrary = Settings <$>
         genComponentName
-    <*> genFilePath
+    <*> fmap Just genFilePath
     <*> arbitrary
     <*> arbitrary
 

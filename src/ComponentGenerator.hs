@@ -4,8 +4,8 @@
 -}
 module ComponentGenerator where
 
-import           Config                    (projectRoot)
 import           Control.Lens
+import           Data.Maybe                (fromJust)
 import           Data.Text                 (replace)
 import           Filesystem.Path.CurrentOS (fromText, (</>))
 import           Templates
@@ -16,10 +16,9 @@ import           Types
 
 {--| If the component doesn't already exist, creates component directory and requisite files. --}
 generateDesiredTemplates :: Settings -> IO ()
-generateDesiredTemplates settings@(Settings componentName componentPath' _container _native) = do
-  appRoot <- projectRoot
-  let componentPath = appRoot </> componentPath' </> componentNamePath
-  let settings' = settings & sComponentDir .~ componentPath
+generateDesiredTemplates settings@(Settings componentName (Just componentPath') _container _native) = do
+  let componentPath = componentPath' </> componentNamePath
+  let settings' = settings & sComponentDir .~ Just componentPath
   let componentGenerator = generateComponent settings'
   let runGenerator = mapM_ componentGenerator
   dirExists <- testdir componentPath
@@ -31,6 +30,7 @@ generateDesiredTemplates settings@(Settings componentName componentPath' _contai
       echo "Copying files..."
       runGenerator $ determineTemplatesToGenerate settings'
   where componentNamePath = fromText componentName
+generateDesiredTemplates _ = echo "Bad component path..."
 
 {--| Determines which templates to create based on command line arguments. --}
 determineTemplatesToGenerate :: Settings -> [Template]
@@ -41,7 +41,7 @@ determineTemplatesToGenerate settings =
 generateComponent :: Settings -> Template -> IO OSFilePath
 generateComponent settings template =
   writeTemplateFile (componentPath </> fromText sanitizedFileName) sanitizedTemplate
-  where componentPath = settings ^. sComponentDir
+  where componentPath = fromJust $ settings ^. sComponentDir
         componentName = settings ^. sComponentName
         sanitizedFileName = replacePlaceholder (filename template)
         sanitizedTemplate = replacePlaceholder (contents template)

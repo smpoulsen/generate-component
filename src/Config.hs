@@ -43,7 +43,7 @@ mergeConfig (Right c) s =
   s & sProjectType .~ (c ^. projectType)
     & sComponentDir .~ dir
   where
-    dir = if (s ^. sComponentDir) == "."
-          then fromText $ c ^. defaultDirectory
-          else s ^. sComponentDir
+    dir = case s ^. sComponentDir of
+      Nothing -> Just $ fromText $ c ^. defaultDirectory
+      Just x  -> Just x
 mergeConfig _ s = s

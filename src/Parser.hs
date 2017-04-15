@@ -19,12 +19,7 @@ initParser = pure Init
 settingsParser :: Parser Command
 settingsParser = fmap Generate $ Settings <$>
       fmap pack (Options.Applicative.argument str (metavar "NAME"))
-      <*> fmap (fromText . pack) (strOption
-        ( long "component-directory"
-       <> short 'd'
-       <> metavar "DIR"
-       <> value "."
-       <> help "Directory in which to add the component. Relative to the project root." ))
+      <*> optional parseComponentDirectory
       <*> switch
         ( long "redux-container"
        <> short 'r'
@@ -33,6 +28,14 @@ settingsParser = fmap Generate $ Settings <$>
         ( long "react-native"
        <> short 'n'
        <> help "Create a React Native component" )
+
+parseComponentDirectory :: Parser OSFilePath
+parseComponentDirectory =
+  fmap (fromText . pack) (strOption
+  (  long "component-directory"
+  <> short 'd'
+  <> metavar "DIR"
+  <> help "Directory in which to add the component. Relative to the project root." ))
 
 opts :: ParserInfo Command
 opts = info (commandParser <**> helper)
