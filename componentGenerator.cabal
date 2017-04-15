@@ -68,6 +68,7 @@ test-suite test
                      , interpolatedstring-perl6
                      , lens
                      , optparse-applicative >= 0.12
+                     , pcre-heavy
                      , quickcheck-instances
                      , system-filepath
                      , tasty >= 0.7
