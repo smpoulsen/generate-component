@@ -16,7 +16,7 @@ import           Types
 
 {--| If the component doesn't already exist, creates component directory and requisite files. --}
 generateDesiredTemplates :: Settings -> IO ()
-generateDesiredTemplates settings@(Settings componentName (Just componentPath') _container _native _type) = do
+generateDesiredTemplates settings@(Settings componentName (Just componentPath') _ _ _ _) = do
   let componentPath = componentPath' </> componentNamePath
   let settings' = settings & sComponentDir .~ Just componentPath
   let componentGenerator = generateComponent settings'
