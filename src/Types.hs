@@ -30,7 +30,7 @@ instance ToJSON ProjectType
 instance FromJSON ProjectType
 
 data ComponentType = ES6Class | CreateClass | Functional
-  deriving (Generic, Show, Eq, Ord)
+  deriving (Generic, Read, Show, Eq, Ord)
 instance ToJSON ComponentType
 instance FromJSON ComponentType
 
@@ -52,6 +52,7 @@ data Settings = Settings
   , _sComponentDir  :: Maybe OSFilePath
   , _sMakeContainer :: Bool
   , _sProjectType   :: ProjectType
+  , _sComponentType :: Maybe ComponentType
   }
   deriving (Eq, Show, Ord)
 makeLenses ''Settings
@@ -69,9 +70,13 @@ instance Arbitrary Settings where
     <*> fmap Just genFilePath
     <*> arbitrary
     <*> arbitrary
+    <*> fmap Just arbitrary
 
 instance Arbitrary ProjectType where
   arbitrary = elements [React, ReactNative]
+
+instance Arbitrary ComponentType where
+  arbitrary = elements [ES6Class, CreateClass, Functional]
 
 {--| Generate a filepath using characters 0-9 and A-z --}
 genFilePath :: Gen OSFilePath

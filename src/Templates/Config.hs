@@ -2,7 +2,6 @@
 {-# LANGUAGE QuasiQuotes       #-}
 module Templates.Config where
 
-import           Data.Text                     (Text)
 import           Text.InterpolatedString.Perl6 (q, qc)
 import           Types
 
@@ -18,5 +17,5 @@ defaultDirectory: app/components
 
 # Style of components to generate
 # Valid values: CreateClass | ES6Class | Functional
-componentType: Functional
+componentType: ES6Class
 |]
