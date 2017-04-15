@@ -1,124 +1,27 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes       #-}
 module Templates where
 
-import           Data.String.QQ
-import           Data.Text      (Text)
+import           Templates.Components
+import           Templates.Containers
+import           Templates.Styles
+import           Types
 
-data Template = Template
-  { filename :: Text
-  , contents :: Text
-  } deriving (Show)
+templatesToGenerate :: ProjectType -> Bool -> [Template]
+templatesToGenerate p container =
+  if container
+    then containerTemplate : containerIndexTemplate : componentTemplates
+    else indexTemplate : componentTemplates
+  where componentTemplates = pickComponentTemplates p
 
-componentTemplate :: Template
-componentTemplate = Template "COMPONENT.js" [s|
-// @flow
-/*
-   NOTE: This file was auto-generated for a component
-   named "COMPONENT"; it is intended to be modified as
-   needed to be useful.
-*/
+pickComponentTemplates :: ProjectType -> [Template]
+pickComponentTemplates p =
+  case p of
+    ReactNative -> nativeTemplates
+    React       -> reactTemplates
 
-import React, {PropTypes} from 'react';
-import {render} from 'react-dom';
+nativeTemplates :: [Template]
+nativeTemplates =
+  [nativeComponentTemplate, stylesTemplate]
 
-const COMPONENT = ({}) => (
-  <div>
-  </div>
-);
-
-COMPONENT.propTypes = {
-};
-
-export default COMPONENT;
-|]
-
-nativeComponentTemplate :: Template
-nativeComponentTemplate = Template "COMPONENT.js" [s|
-// @flow
-/*
-   NOTE: This file was auto-generated for a component
-   named "COMPONENT"; it is intended to be modified as
-   needed to be useful.
-*/
-
-import React, {PropTypes} from 'react';
-import {View} from 'react-native';
-
-import styles from './styles';
-
-const COMPONENT = ({}) => (
-  <View>
-  </View>
-);
-
-COMPONENT.propTypes = {
-};
-
-export default COMPONENT;
-|]
-
-containerTemplate :: Template
-containerTemplate = Template "COMPONENTContainer.js" [s|
-// @flow
-/*
-   NOTE: This file was auto-generated for a component
-   named "COMPONENT"; it is intended to be modified as
-   needed to be useful.
-*/
-
-import {connect} from 'react-redux';
-
-import COMPONENT from './COMPONENT';
-
-const mapStateToProps = (state: Object) => {
-  return {
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fn: () => {
-      dispatch();
-    },
-  }
-};
-
-const COMPONENTContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(COMPONENT);
-
-export default COMPONENTContainer;
-|]
-
-stylesTemplate :: Template
-stylesTemplate = Template "styles.js" [s|
-// @flow
-/*
-  NOTE: This file was auto-generated for a component
-  named "COMPONENT"; it is intended to be modified as
-  needed to be useful.
-*/
-
-import {StyleSheet} from 'react-native';
-
-const styles = StyleSheet.create({
-});
-
-export default styles;
-|]
-
-indexTemplate :: Template
-indexTemplate = Template "index.js" [s|
-import COMPONENT from './COMPONENT';
-
-export default COMPONENT;
-|]
-
-containerIndexTemplate :: Template
-containerIndexTemplate = Template "index.js" [s|
-import COMPONENTContainer from './COMPONENTContainer';
-
-export default COMPONENTContainer;
-|]
+reactTemplates :: [Template]
+reactTemplates =
+  [reactComponentTemplate]

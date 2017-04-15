@@ -5,14 +5,40 @@
 module Main where
 
 import           ComponentGenerator
+import           Config
+import           Control.Lens              (over)
+import           Data.Monoid               ((<>))
+import           Data.Text                 (Text, pack)
+import           Filesystem.Path.CurrentOS (encodeString, fromText, (</>))
+import           Options.Applicative       (execParser)
 import           Parser
-import           Turtle.Options     (options)
+import           Templates.Config
 import           Turtle.Prelude
+import           Types
 
 main :: IO ()
 main = do
-  settings <- options "Component generator" parser
-  generateDesiredTemplates settings
+  command <- execParser opts
+  case command of
+    Init -> initializeWithConfigFile
+    Generate settings -> do
+      configFile <- readConfig
+      appRoot <- projectRoot
+      generateDesiredTemplates $ over sComponentDir (fmap (appRoot </>)) $ mergeConfig configFile settings
   echo "Done"
 
+filePathToText :: OSFilePath -> Text
+filePathToText = pack . encodeString
 
+initializeWithConfigFile :: IO ()
+initializeWithConfigFile = do
+  appRoot <- projectRoot
+  let configLocation = appRoot </> (fromText . filename $ configTemplate)
+  dirExists <- testfile configLocation
+  if dirExists
+    then echo $ filePathToText configLocation <> " already exists; exiting without action."
+  else do
+    echo "Writing config file:"
+    echo $ contents configTemplate
+    writeTextFile configLocation  (contents configTemplate)
+    echo $ "Config generated at " <> filePathToText configLocation

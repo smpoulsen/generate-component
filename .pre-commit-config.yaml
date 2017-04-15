@@ -1,0 +1,8 @@
+-   repo: local
+    hooks:
+    -   id: stack-test 
+        name: 'haskell: stack test'
+        entry: stack test
+        language: system
+        files: test/*\.hs$
+        always_run: true

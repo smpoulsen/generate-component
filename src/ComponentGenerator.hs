@@ -5,6 +5,7 @@
 module ComponentGenerator where
 
 import           Control.Lens
+import           Data.Maybe                (fromJust)
 import           Data.Text                 (replace)
 import           Filesystem.Path.CurrentOS (fromText, (</>))
 import           Templates
@@ -15,7 +16,11 @@ import           Types
 
 {--| If the component doesn't already exist, creates component directory and requisite files. --}
 generateDesiredTemplates :: Settings -> IO ()
-generateDesiredTemplates settings@(Settings componentName componentPath' _container _native) = do
+generateDesiredTemplates settings@(Settings componentName (Just componentPath') _container _native) = do
+  let componentPath = componentPath' </> componentNamePath
+  let settings' = settings & sComponentDir .~ Just componentPath
+  let componentGenerator = generateComponent settings'
+  let runGenerator = mapM_ componentGenerator
   dirExists <- testdir componentPath
   if dirExists
     then echo "Component directory exists; exiting without action."
@@ -23,30 +28,20 @@ generateDesiredTemplates settings@(Settings componentName componentPath' _contai
       echo $ format ("Making directory at: "%s%"") (format fp componentPath)
       mktree componentPath
       echo "Copying files..."
-      runGenerator $ determineTemplatesToGenerate settings
-  where componentPath = componentPath' </> componentNamePath
-        componentNamePath = fromText componentName
-        componentGenerator = generateComponent settings
-        runGenerator = mapM_ componentGenerator
+      runGenerator $ determineTemplatesToGenerate settings'
+  where componentNamePath = fromText componentName
+generateDesiredTemplates _ = echo "Bad component path..."
 
 {--| Determines which templates to create based on command line arguments. --}
 determineTemplatesToGenerate :: Settings -> [Template]
 determineTemplatesToGenerate settings =
-  case makeReactNative of
-    True  | makeContainer -> containerTemplate : containerIndexTemplate : nativeTemplates
-          | otherwise     -> indexTemplate : nativeTemplates
-    False | makeContainer -> containerTemplate : containerIndexTemplate : reactTemplates
-          | otherwise     -> indexTemplate : reactTemplates
-  where makeReactNative = settings ^. sReactNative
-        makeContainer   = settings ^. sMakeContainer
-        reactTemplates  = [componentTemplate]
-        nativeTemplates = [nativeComponentTemplate, stylesTemplate]
+  templatesToGenerate (settings ^. sProjectType) (settings ^. sMakeContainer)
 
 {--| Generates the component's path, writes the file, and replaces the placeholder text with the template name. --}
 generateComponent :: Settings -> Template -> IO OSFilePath
 generateComponent settings template =
   writeTemplateFile (componentPath </> fromText sanitizedFileName) sanitizedTemplate
-  where componentPath = (settings ^. sComponentDir) </> fromText componentName
+  where componentPath = fromJust $ settings ^. sComponentDir
         componentName = settings ^. sComponentName
         sanitizedFileName = replacePlaceholder (filename template)
         sanitizedTemplate = replacePlaceholder (contents template)
