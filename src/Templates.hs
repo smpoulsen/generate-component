@@ -1,27 +1,29 @@
 module Templates where
 
 import           Templates.Components
+import           Templates.Components.React
+import           Templates.Components.ReactNative
 import           Templates.Containers
 import           Templates.Styles
 import           Types
 
-templatesToGenerate :: ProjectType -> Bool -> [Template]
-templatesToGenerate p container =
+templatesToGenerate :: ProjectType -> ComponentType -> Bool -> [Template]
+templatesToGenerate p c container =
   if container
     then containerTemplate : containerIndexTemplate : componentTemplates
     else indexTemplate : componentTemplates
-  where componentTemplates = pickComponentTemplates p
+  where componentTemplates = pickComponentTemplates p c
 
-pickComponentTemplates :: ProjectType -> [Template]
-pickComponentTemplates p =
+pickComponentTemplates :: ProjectType -> ComponentType -> [Template]
+pickComponentTemplates p c =
   case p of
-    ReactNative -> nativeTemplates
-    React       -> reactTemplates
+    ReactNative -> nativeTemplates c
+    React       -> reactTemplates c
 
-nativeTemplates :: [Template]
-nativeTemplates =
-  [nativeComponentTemplate, stylesTemplate]
+nativeTemplates :: ComponentType -> [Template]
+nativeTemplates c =
+  [nativeComponentTemplate c, stylesTemplate]
 
-reactTemplates :: [Template]
-reactTemplates =
-  [reactComponentTemplate]
+reactTemplates :: ComponentType -> [Template]
+reactTemplates c =
+  [reactComponentTemplate c]

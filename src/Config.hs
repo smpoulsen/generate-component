@@ -42,8 +42,12 @@ mergeConfig :: Either ParseException Config -> Settings -> Settings
 mergeConfig (Right c) s =
   s & sProjectType .~ (c ^. projectType)
     & sComponentDir .~ dir
+    & sComponentType .~ cType
   where
     dir = case s ^. sComponentDir of
       Nothing -> Just $ fromText $ c ^. defaultDirectory
-      Just x  -> Just x
+      Just d  -> Just d
+    cType = case s ^. sComponentType of
+      Nothing -> Just $ c ^. componentType
+      Just ct -> Just ct
 mergeConfig _ s = s

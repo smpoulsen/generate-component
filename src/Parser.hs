@@ -29,6 +29,7 @@ settingsParser = fmap Generate $ Settings <$>
         ( long "react-native"
        <> short 'n'
        <> help "Create a React Native component" )
+      <*> parseComponentType
 
 parseComponentDirectory :: Parser OSFilePath
 parseComponentDirectory =
@@ -37,6 +38,13 @@ parseComponentDirectory =
   <> short 'd'
   <> metavar "DIR"
   <> help "Directory in which to add the component. Relative to the project root." ))
+
+parseComponentType :: Parser (Maybe ComponentType)
+parseComponentType =
+  optional $ option auto
+  ( long "component-type"
+  <> short 't'
+  <> help "The type of component to generate" )
 
 opts :: ParserInfo Command
 opts = info (commandParser <**> helper)

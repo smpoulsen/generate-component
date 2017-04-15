@@ -18,20 +18,38 @@
      Copied executables to $HOME/.local/bin:
      - generate-component
 
+     generate-component -h
+     Flexible generator for React/React-Native components
 
-     ~/.local/bin/generate-component -h
-     Component generator
-
-     Usage: generate-component NAME [-d|--component-directory DIR]
-                               [-c|--make-container] [-n|--react-native]
+     Usage: generate-component COMMAND
+     Generate React/React-Native components
 
      Available options:
-       -h,--help                Show this help text
-       -d,--component-directory DIR
-                               Directory to add the component
-       -c,--make-container      Create a container component
-       -n,--react-native        Create a React Native component
+     -h,--help                Show this help text
+
+     Available commands:
+     init                     Create a config file
+     gen                      Generate a component
    #+END_SRC
+
+** Commands
+   ~generate-component~ has two subcommands:
+     + ~init~
+     + ~gen~
+*** ~init~
+    Initializes ~generate-component~ with a config file in the current directory. The config file specifies defaults such as project type, default component directory, and the default type of components to generate.
+*** ~gen~
+    Generates a component:
+    #+BEGIN_SRC sh
+      generate-component gen -h
+
+      Usage: generate-component gen NAME [-d|--component-directory DIR]
+                                    [-r|--redux-container] [-n|--react-native]
+                                    [-t|--component-type ARG]
+        Generate a component
+
+    #+END_SRC
+    Command line arguments supersede config file settings.
 
 *** Generating a React component:
    #+BEGIN_SRC sh
@@ -85,7 +103,7 @@
    #+END_SRC
 *** Note
    - DIR: an optional directory under which to create the component; defaults to ~./app/components/~
-   - ~-c~: a flag that, if present, additionally generates a redux container component
+   - ~-r~: a flag that, if present, additionally generates a redux container component
 ** Testing
 *** To run the tests:
     #+BEGIN_SRC sh
