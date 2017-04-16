@@ -7,6 +7,7 @@ module Types where
 import           Control.Lens              hiding (elements)
 import           Data.Aeson                (decode, withObject)
 import           Data.Char                 (chr)
+import           Data.Monoid               ((<>))
 import           Data.Text
 import           Data.Yaml                 (FromJSON, ToJSON, parseJSON, (.:))
 import           Filesystem.Path.CurrentOS (FilePath, fromText, valid)
@@ -37,7 +38,10 @@ instance FromJSON ComponentType
 data PropType = PropType
   { name     :: Text
   , propType :: Text
-  } deriving (Generic, Show, Eq, Ord)
+  } deriving (Generic, Eq, Ord)
+instance Show PropType where
+  show (PropType n t) =
+    unpack $ n <> ": PropTypes." <> t
 
 data Config = Config
   { _projectType      :: ProjectType

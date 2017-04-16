@@ -35,7 +35,12 @@ generateDesiredTemplates _ = echo "Bad component path..."
 {--| Determines which templates to create based on command line arguments. --}
 determineTemplatesToGenerate :: Settings -> [Template]
 determineTemplatesToGenerate settings =
-  templatesToGenerate (settings ^. sProjectType) (fromJust $ settings ^. sComponentType) (settings ^. sMakeContainer)
+  templatesToGenerate pType cType propTypes makeContainer
+  where pType         = settings ^. sProjectType
+        cType         = fromJust $ settings ^. sComponentType
+        makeContainer = settings ^. sMakeContainer
+        propTypes     = settings ^. sPropTypes
+
 
 {--| Generates the component's path, writes the file, and replaces the placeholder text with the template name. --}
 generateComponent :: Settings -> Template -> IO OSFilePath

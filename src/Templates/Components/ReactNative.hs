@@ -2,18 +2,19 @@
 {-# LANGUAGE QuasiQuotes       #-}
 module Templates.Components.ReactNative where
 
+import           Templates.Components
 import           Text.InterpolatedString.Perl6 (q, qc)
 import           Types
 
-nativeComponentTemplate :: ComponentType -> Template
-nativeComponentTemplate cType =
+nativeComponentTemplate :: ComponentType -> Maybe [PropType] -> Template
+nativeComponentTemplate cType propTypes =
   case cType of
-    Functional  -> functionalNativeComponent
-    ES6Class    -> es6NativeComponent
-    CreateClass -> createClassNativeComponent
+    Functional  -> functionalNativeComponent propTypes
+    ES6Class    -> es6NativeComponent propTypes
+    CreateClass -> createClassNativeComponent propTypes
 
-functionalNativeComponent :: Template
-functionalNativeComponent = Template "COMPONENT.js" [q|
+functionalNativeComponent :: Maybe [PropType] -> Template
+functionalNativeComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*
    NOTE: This file was auto-generated for a component
@@ -23,23 +24,24 @@ functionalNativeComponent = Template "COMPONENT.js" [q|
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View} from 'react-native';
+import \{View} from 'react-native';
 
 import styles from './styles';
 
-const COMPONENT = ({}) => (
+const COMPONENT = (\{}) => (
   <View>
   </View>
 );
 
-COMPONENT.propTypes = {
+COMPONENT.propTypes = \{
+  {stringifyPropTypes 2 p}
 };
 
 export default COMPONENT;
 |]
 
-es6NativeComponent :: Template
-es6NativeComponent = Template "COMPONENT.js" [q|
+es6NativeComponent :: Maybe [PropType] -> Template
+es6NativeComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*
    NOTE: This file was auto-generated for a component
@@ -49,15 +51,16 @@ es6NativeComponent = Template "COMPONENT.js" [q|
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View} from 'react-native';
+import \{View} from 'react-native';
 
 import styles from './styles';
 
-class COMPONENT extends Component {
-  static propTypes = {
+class COMPONENT extends Component \{
+  static propTypes = \{
+    {stringifyPropTypes 4 p}
   };
 
-  render() {
+  render() \{
     return (
       <View>
       </View>
@@ -68,8 +71,8 @@ class COMPONENT extends Component {
 export default COMPONENT;
 |]
 
-createClassNativeComponent :: Template
-createClassNativeComponent = Template "COMPONENT.js" [q|
+createClassNativeComponent :: Maybe [PropType] -> Template
+createClassNativeComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*
    NOTE: This file was auto-generated for a component
@@ -77,16 +80,17 @@ createClassNativeComponent = Template "COMPONENT.js" [q|
    needed to be useful.
 */
 
-import React, {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
-import {View} from 'react-native';
+import \{View} from 'react-native';
 
-const COMPONENT = createReactClass({
-  propTypes: {
+const COMPONENT = createReactClass(\{
+  propTypes: \{
+    {stringifyPropTypes 4 p}
   };
 
-  render() {
+  render() \{
     return (
       <View>
       </View>

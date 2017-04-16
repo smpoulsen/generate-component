@@ -7,23 +7,23 @@ import           Templates.Containers
 import           Templates.Styles
 import           Types
 
-templatesToGenerate :: ProjectType -> ComponentType -> Bool -> [Template]
-templatesToGenerate p c container =
+templatesToGenerate :: ProjectType -> ComponentType -> Maybe [PropType] -> Bool -> [Template]
+templatesToGenerate p c propTypes container =
   if container
     then containerTemplate : containerIndexTemplate : componentTemplates
     else indexTemplate : componentTemplates
-  where componentTemplates = pickComponentTemplates p c
+  where componentTemplates = pickComponentTemplates p c propTypes
 
-pickComponentTemplates :: ProjectType -> ComponentType -> [Template]
-pickComponentTemplates p c =
+pickComponentTemplates :: ProjectType -> ComponentType -> Maybe [PropType] -> [Template]
+pickComponentTemplates p c propTypes =
   case p of
-    ReactNative -> nativeTemplates c
-    React       -> reactTemplates c
+    ReactNative -> nativeTemplates c propTypes
+    React       -> reactTemplates c propTypes
 
-nativeTemplates :: ComponentType -> [Template]
-nativeTemplates c =
-  [nativeComponentTemplate c, stylesTemplate]
+nativeTemplates :: ComponentType -> Maybe [PropType] -> [Template]
+nativeTemplates c propTypes =
+  [nativeComponentTemplate c propTypes, stylesTemplate]
 
-reactTemplates :: ComponentType -> [Template]
-reactTemplates c =
-  [reactComponentTemplate c]
+reactTemplates :: ComponentType -> Maybe [PropType] -> [Template]
+reactTemplates c propTypes =
+  [reactComponentTemplate c propTypes]

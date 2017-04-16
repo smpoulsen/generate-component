@@ -2,7 +2,9 @@
 {-# LANGUAGE QuasiQuotes       #-}
 module Templates.Components where
 
-import           Text.InterpolatedString.Perl6 (q, qc)
+import           Data.Monoid                   ((<>))
+import           Data.Text                     (Text, intercalate, pack)
+import           Text.InterpolatedString.Perl6 (q)
 import           Types
 
 indexTemplate :: Template
@@ -11,3 +13,10 @@ import COMPONENT from './COMPONENT';
 
 export default COMPONENT;
 |]
+
+stringifyPropTypes :: Int -> Maybe [PropType] -> Text
+stringifyPropTypes nSpaces ts =
+  case ts of
+    Nothing -> ""
+    Just x  -> intercalate (",\n" <> spaces) $ pack . show <$> x
+  where spaces = pack . take nSpaces $ cycle " "
