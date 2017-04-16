@@ -15,15 +15,25 @@
   + [[#examples][Examples]]
 
 ** Installation
-   You should have [[https://www.haskell.org/ghc/][GHC]] and [[https://www.haskell.org/cabal/][cabal]] or [[https://docs.haskellstack.org/en/stable/README/][stack]] installed.
+*** Pre-compiled:
 
-   Installing `generate-component` is easiest with stack:
-   #+BEGIN_SRC sh
-   git clone git@github.com:tpoulsen/generate-component.git
-   stack install
-   #+END_SRC
+     Download [[https://github.com/tpoulsen/generate-component/releases/tag/v0.3.0.0][the tar.gz]] of the release; unarchive it and place in a directory that's in your path.
 
-   This compiles the program and puts the executable in ~/.local/bin~. If this is in your path, you now have the command ~generate-component~.
+     #+BEGIN_SRC sh
+       tar -xvzf generate-component.tar.gz
+     #+END_SRC
+
+*** From source:
+
+    You should have [[https://www.haskell.org/ghc/][GHC]] and [[https://www.haskell.org/cabal/][cabal]] or [[https://docs.haskellstack.org/en/stable/README/][stack]] installed.
+
+    Installing `generate-component` is easiest with stack:
+    #+BEGIN_SRC sh
+    git clone git@github.com:tpoulsen/generate-component.git
+    stack install
+    #+END_SRC
+
+    This compiles the program and puts the executable in ~/.local/bin~. If this is in your path, you now have the command ~generate-component~.
 
 ** Usage
    You can learn about the available command line options with ~generate-component --help~ (or ~-h~).
