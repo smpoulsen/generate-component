@@ -2,6 +2,7 @@
 {-# LANGUAGE QuasiQuotes       #-}
 module Templates.Components where
 
+import           Control.Lens                  ((^.))
 import           Data.Monoid                   ((<>))
 import           Data.Text                     (Text, intercalate, pack)
 import           Text.InterpolatedString.Perl6 (q)
@@ -18,5 +19,11 @@ stringifyPropTypes :: Int -> Maybe [PropType] -> Text
 stringifyPropTypes nSpaces ts =
   case ts of
     Nothing -> ""
-    Just x  -> intercalate (",\n" <> spaces) $ pack . show <$> x
+    Just xs -> intercalate (",\n" <> spaces) $ pack . show <$> xs
   where spaces = pack . take nSpaces $ cycle " "
+
+propNames :: Maybe [PropType] -> Text
+propNames ts =
+  case ts of
+    Nothing -> ""
+    Just xs -> intercalate ", " $ fmap (^. name) xs

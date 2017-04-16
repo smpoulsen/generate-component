@@ -28,7 +28,7 @@ import \{View} from 'react-native';
 
 import styles from './styles';
 
-const COMPONENT = (\{}) => (
+const COMPONENT = (\{{propNames p}}) => (
   <View>
   </View>
 );

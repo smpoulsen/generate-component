@@ -36,12 +36,13 @@ instance ToJSON ComponentType
 instance FromJSON ComponentType
 
 data PropType = PropType
-  { name     :: Text
-  , propType :: Text
+  { _name     :: Text
+  , _propType :: Text
   } deriving (Generic, Eq, Ord)
 instance Show PropType where
   show (PropType n t) =
     unpack $ n <> ": PropTypes." <> t
+makeLenses ''PropType
 
 data Config = Config
   { _projectType      :: ProjectType

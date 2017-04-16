@@ -26,7 +26,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import \{render} from 'react-dom';
 
-const COMPONENT = (\{}) => (
+const COMPONENT = (\{{propNames p}}) => (
   <div>
   </div>
 );
