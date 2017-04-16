@@ -36,7 +36,7 @@ qcProps = testGroup "(checked by QuickCheck)"
   ]
 
 prop_makesFiles :: Settings -> Property
-prop_makesFiles settings@(Settings componentName (Just componentPath) _container native _component) = monadicIO $ do
+prop_makesFiles settings@(Settings componentName (Just componentPath) _ native _ _) = monadicIO $ do
   let tmpDir = pure $ "/tmp" </> componentPath
   let componentNamePath = fromText componentName
   let tmpSettings = sComponentDir .~  tmpDir $ settings
@@ -55,7 +55,7 @@ prop_makesFiles settings@(Settings componentName (Just componentPath) _container
   assert $ and filesExist
 
 prop_replacePlaceholderText :: Settings -> Property
-prop_replacePlaceholderText settings@(Settings componentName (Just componentPath) _container _native _component) = monadicIO $ do
+prop_replacePlaceholderText settings@(Settings componentName (Just componentPath) _ _ _ _) = monadicIO $ do
   let tmpDir = pure $ "/tmp" </> componentPath
   let componentNamePath = fromText componentName
 

@@ -7,6 +7,7 @@ module Types where
 import           Control.Lens              hiding (elements)
 import           Data.Aeson                (decode, withObject)
 import           Data.Char                 (chr)
+import           Data.Monoid               ((<>))
 import           Data.Text
 import           Data.Yaml                 (FromJSON, ToJSON, parseJSON, (.:))
 import           Filesystem.Path.CurrentOS (FilePath, fromText, valid)
@@ -34,6 +35,15 @@ data ComponentType = ES6Class | CreateClass | Functional
 instance ToJSON ComponentType
 instance FromJSON ComponentType
 
+data PropType = PropType
+  { _name     :: Text
+  , _propType :: Text
+  } deriving (Generic, Eq, Ord)
+instance Show PropType where
+  show (PropType n t) =
+    unpack $ n <> ": PropTypes." <> t
+makeLenses ''PropType
+
 data Config = Config
   { _projectType      :: ProjectType
   , _componentType    :: ComponentType
@@ -46,13 +56,13 @@ instance FromJSON Config where
     <*> v .: "componentType"
     <*> v .: "defaultDirectory"
 
-
 data Settings = Settings
   { _sComponentName :: Text
   , _sComponentDir  :: Maybe OSFilePath
   , _sMakeContainer :: Bool
   , _sProjectType   :: ProjectType
   , _sComponentType :: Maybe ComponentType
+  , _sPropTypes     :: Maybe [PropType]
   }
   deriving (Eq, Show, Ord)
 makeLenses ''Settings
@@ -71,12 +81,18 @@ instance Arbitrary Settings where
     <*> arbitrary
     <*> arbitrary
     <*> fmap Just arbitrary
+    <*> arbitrary
 
 instance Arbitrary ProjectType where
   arbitrary = elements [React, ReactNative]
 
 instance Arbitrary ComponentType where
   arbitrary = elements [ES6Class, CreateClass, Functional]
+
+instance Arbitrary PropType where
+  arbitrary = PropType <$>
+        genText
+    <*> genText
 
 {--| Generate a filepath using characters 0-9 and A-z --}
 genFilePath :: Gen OSFilePath

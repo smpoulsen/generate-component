@@ -3,16 +3,23 @@
 module Parser where
 
 import           Data.Monoid               ((<>))
-import           Data.Text                 (pack)
+import           Data.Text                 (pack, split, words)
 import           Filesystem.Path.CurrentOS (fromText)
 import           Options.Applicative
+import           Prelude                   hiding (words)
 import           Types
 
 {--| Command line argument parser --}
+opts :: ParserInfo Command
+opts = info (commandParser <**> helper)
+  ( fullDesc
+  <> progDesc "Generate React/React-Native components"
+  <> header "Flexible generator for React/React-Native components. Generate ES6 class, React.createClass, and functional components with optional proptypes and redux containers." )
+
 commandParser :: Parser Command
 commandParser = subparser $
-     command "init" (info initParser $ progDesc "Create a config file")
-  <> command "gen" (info settingsParser $ progDesc "Generate a component")
+     command "init" (info (initParser <**> helper) $ progDesc "Create a config file")
+  <> command "gen" (info (settingsParser <**> helper) $ progDesc "Generate a component")
 
 initParser :: Parser Command
 initParser = pure Init
@@ -30,6 +37,7 @@ settingsParser = fmap Generate $ Settings <$>
        <> short 'n'
        <> help "Create a React Native component" )
       <*> parseComponentType
+      <*> parsePropTypes
 
 parseComponentDirectory :: Parser OSFilePath
 parseComponentDirectory =
@@ -44,10 +52,16 @@ parseComponentType =
   optional $ option auto
   ( long "component-type"
   <> short 't'
-  <> help "The type of component to generate" )
+  <> help "The type of component to generate. Valid options: ES6Class | CreateClass | Functional" )
 
-opts :: ParserInfo Command
-opts = info (commandParser <**> helper)
-  ( fullDesc
-  <> progDesc "Generate React/React-Native components"
-  <> header "Flexible generator for React/React-Native components" )
+parsePropTypes :: Parser (Maybe [PropType])
+parsePropTypes =
+  optional $ option parsePropTypesReader
+  ( long "proptypes"
+  <> short 'p'
+  <> help "Component props and types (enclosed in quotes) - e.g. -p \"id:number name:string\"" )
+
+parsePropTypesReader :: ReadM [PropType]
+parsePropTypesReader = eitherReader $ \s ->
+  pure $ toPropType $ split (== ':') <$> (words . pack $ s)
+  where toPropType = fmap (\x -> PropType (Prelude.head x) (Prelude.last x))
