@@ -14,7 +14,7 @@ opts :: ParserInfo Command
 opts = info (commandParser <**> helper)
   ( fullDesc
   <> progDesc "Generate React/React-Native components"
-  <> header "Flexible generator for React/React-Native components" )
+  <> header "Flexible generator for React/React-Native components. Generate ES6 class, React.createClass, and functional components with optional proptypes and redux containers." )
 
 commandParser :: Parser Command
 commandParser = subparser $
@@ -52,7 +52,7 @@ parseComponentType =
   optional $ option auto
   ( long "component-type"
   <> short 't'
-  <> help "The type of component to generate" )
+  <> help "The type of component to generate. Valid options: ES6Class | CreateClass | Functional" )
 
 parsePropTypes :: Parser (Maybe [PropType])
 parsePropTypes =
