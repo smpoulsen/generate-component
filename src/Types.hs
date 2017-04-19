@@ -5,14 +5,13 @@
 module Types where
 
 import           Control.Lens              hiding (elements)
-import           Data.Aeson                (decode, withObject)
+import           Data.Aeson                (withObject)
 import           Data.Char                 (chr)
 import           Data.Monoid               ((<>))
 import           Data.Text
 import           Data.Yaml                 (FromJSON, ToJSON, parseJSON, (.:))
 import           Filesystem.Path.CurrentOS (FilePath, fromText, valid)
 import           GHC.Generics
-import           Options.Applicative       (Parser)
 import           Test.QuickCheck           (Gen, choose, elements, listOf1,
                                             oneof, suchThat)
 import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)

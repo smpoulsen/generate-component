@@ -31,10 +31,12 @@ executable generate-component
                      , Templates.Containers
                      , Templates.Styles
                      , Types
+                     , Types.PropTypes
   -- other-extensions:    
   build-depends:       base >=4.9 && <4.10
                      , QuickCheck
                      , aeson
+                     , containers
                      , interpolatedstring-perl6
                      , lens
                      , optparse-applicative >= 0.12
@@ -66,9 +68,11 @@ test-suite test
                      , Templates.Containers
                      , Templates.Styles
                      , Types
+                     , Types.PropTypes
   build-depends:       base >= 4 && < 5
                      , QuickCheck
                      , aeson
+                     , containers
                      , interpolatedstring-perl6
                      , lens
                      , optparse-applicative >= 0.12
