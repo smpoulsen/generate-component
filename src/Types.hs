@@ -35,14 +35,14 @@ data ComponentType = ES6Class | CreateClass | Functional
 instance ToJSON ComponentType
 instance FromJSON ComponentType
 
-data PropType = PropType
+data Prop = Prop
   { _name     :: Text
   , _propType :: Text
   } deriving (Generic, Eq, Ord)
-instance Show PropType where
-  show (PropType n t) =
+instance Show Prop where
+  show (Prop n t) =
     unpack $ n <> ": PropTypes." <> t
-makeLenses ''PropType
+makeLenses ''Prop
 
 data Config = Config
   { _projectType      :: ProjectType
@@ -62,7 +62,7 @@ data Settings = Settings
   , _sMakeContainer :: Bool
   , _sProjectType   :: ProjectType
   , _sComponentType :: Maybe ComponentType
-  , _sPropTypes     :: Maybe [PropType]
+  , _sPropTypes     :: Maybe [Prop]
   }
   deriving (Eq, Show, Ord)
 makeLenses ''Settings
@@ -89,8 +89,8 @@ instance Arbitrary ProjectType where
 instance Arbitrary ComponentType where
   arbitrary = elements [ES6Class, CreateClass, Functional]
 
-instance Arbitrary PropType where
-  arbitrary = PropType <$>
+instance Arbitrary Prop where
+  arbitrary = Prop <$>
         genText
     <*> genText
 

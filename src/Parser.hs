@@ -54,14 +54,14 @@ parseComponentType =
   <> short 't'
   <> help "The type of component to generate. Valid options: ES6Class | CreateClass | Functional" )
 
-parsePropTypes :: Parser (Maybe [PropType])
+parsePropTypes :: Parser (Maybe [Prop])
 parsePropTypes =
   optional $ option parsePropTypesReader
   ( long "proptypes"
   <> short 'p'
   <> help "Component props and types (enclosed in quotes) - e.g. -p \"id:number name:string\"" )
 
-parsePropTypesReader :: ReadM [PropType]
+parsePropTypesReader :: ReadM [Prop]
 parsePropTypesReader = eitherReader $ \s ->
   pure $ toPropType $ split (== ':') <$> (words . pack $ s)
-  where toPropType = fmap (\x -> PropType (Prelude.head x) (Prelude.last x))
+  where toPropType = fmap (\x -> Prop (Prelude.head x) (Prelude.last x))

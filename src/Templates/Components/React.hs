@@ -6,14 +6,14 @@ import           Templates.Components
 import           Text.InterpolatedString.Perl6 (q, qc)
 import           Types
 
-reactComponentTemplate :: ComponentType -> Maybe [PropType] -> Template
+reactComponentTemplate :: ComponentType -> Maybe [Prop] -> Template
 reactComponentTemplate cType propTypes =
   case cType of
     Functional  -> functionalReactComponent propTypes
     ES6Class    -> es6ReactComponent propTypes
     CreateClass -> createClassReactComponent propTypes
 
-functionalReactComponent :: Maybe [PropType] -> Template
+functionalReactComponent :: Maybe [Prop] -> Template
 functionalReactComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*
@@ -38,7 +38,7 @@ COMPONENT.propTypes = \{
 export default COMPONENT;
 |]
 
-es6ReactComponent :: Maybe [PropType] -> Template
+es6ReactComponent :: Maybe [Prop] -> Template
 es6ReactComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*
@@ -67,7 +67,7 @@ class COMPONENT extends Component \{
 export default COMPONENT;
 |]
 
-createClassReactComponent :: Maybe [PropType] -> Template
+createClassReactComponent :: Maybe [Prop] -> Template
 createClassReactComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*

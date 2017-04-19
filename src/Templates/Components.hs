@@ -15,14 +15,14 @@ import COMPONENT from './COMPONENT';
 export default COMPONENT;
 |]
 
-stringifyPropTypes :: Int -> Maybe [PropType] -> Text
+stringifyPropTypes :: Int -> Maybe [Prop] -> Text
 stringifyPropTypes nSpaces ts =
   case ts of
     Nothing -> ""
     Just xs -> intercalate (",\n" <> spaces) $ pack . show <$> xs
   where spaces = pack . take nSpaces $ cycle " "
 
-propNames :: Maybe [PropType] -> Text
+propNames :: Maybe [Prop] -> Text
 propNames ts =
   case ts of
     Nothing -> ""
