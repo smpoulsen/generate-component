@@ -3,12 +3,14 @@
 
 module Types.PropTypes where
 
-import           Data.Aeson   (FromJSON, ToJSON)
-import           Data.Char    (toLower)
-import           Data.Monoid  ((<>))
-import           Data.Text    (Text, intercalate, pack, unwords)
+import           Data.Aeson                (FromJSON, ToJSON)
+import           Data.Char                 (toLower)
+import           Data.Monoid               ((<>))
+import           Data.Text                 (Text, intercalate, pack, unwords)
 import           GHC.Generics
-import           Prelude      hiding (unwords)
+import           Prelude                   hiding (unwords)
+import           Test.QuickCheck           (Gen, choose)
+import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
 
 {-
 Atomic types
@@ -31,7 +33,7 @@ Atomic types
       PropTypes.instanceOf([Text]),
       PropTypes.shape({key: value}),
 -}
-data PropType a =
+data PropType =
     Any
   | Array
   | Bool
@@ -42,21 +44,24 @@ data PropType a =
   | Symbol
   | Node
   | Element
-  | OneOfType [PropType a]
-  | ArrayOf (PropType a)
-  | ObjectOf (PropType a)
+  | OneOfType [PropType]
+  | ArrayOf PropType
+  | ObjectOf PropType
   | OneOf [Text]
   | InstanceOf Text
-  | Shape [(Text, PropType a)]
+  | Shape [(Text, PropType)]
   deriving (Generic, Read, Show, Eq, Ord)
-instance FromJSON (PropType a)
-instance ToJSON (PropType a)
+instance FromJSON PropType
+instance ToJSON PropType
 
 toLowerCamelCase :: String -> String
 toLowerCamelCase (h:t) = toLower h : t
 toLowerCamelCase []    = ""
 
-propTypeDisplay :: PropType a -> Text
+data IsRequired = Required | Optional
+  deriving (Generic, Read, Show, Eq, Ord)
+
+propTypeDisplay :: PropType -> Text
 propTypeDisplay p =
   case p of
     OneOfType t ->
@@ -75,3 +80,19 @@ propTypeDisplay p =
       "PropTypes." <> (pack . toLowerCamelCase . show $ p)
   where formatKeyValue (k, v) =
           k <> ": " <> propTypeDisplay v <> ","
+
+instance Arbitrary PropType where
+  arbitrary = do
+    n <- choose (0, 9) :: Gen Int
+    return $ case n of
+      0 -> Any
+      1 -> Array
+      2 -> Bool
+      3 -> Func
+      4 -> Number
+      5 -> Object
+      6 -> String
+      7 -> Symbol
+      8 -> Node
+      9 -> Element
+      _ -> String

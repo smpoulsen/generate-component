@@ -16,6 +16,7 @@ import           Test.QuickCheck           (Gen, choose, elements, listOf1,
                                             oneof, suchThat)
 import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
 import           Test.QuickCheck.Instances ()
+import           Types.PropTypes
 
 data Template = Template
   { filename :: Text
@@ -36,11 +37,11 @@ instance FromJSON ComponentType
 
 data Prop = Prop
   { _name     :: Text
-  , _propType :: Text
+  , _propType :: PropType
   } deriving (Generic, Eq, Ord)
 instance Show Prop where
   show (Prop n t) =
-    unpack $ n <> ": PropTypes." <> t
+    unpack $ n <> ": " <> propTypeDisplay t
 makeLenses ''Prop
 
 data Config = Config
@@ -91,7 +92,7 @@ instance Arbitrary ComponentType where
 instance Arbitrary Prop where
   arbitrary = Prop <$>
         genText
-    <*> genText
+    <*> arbitrary
 
 {--| Generate a filepath using characters 0-9 and A-z --}
 genFilePath :: Gen OSFilePath
