@@ -17,7 +17,7 @@
 ** Installation
 *** Homebrew:
 
-On OS X/macOS, `generate-component` can be installed via Homebrew:
+On OS X/macOS, ~generate-component~ can be installed via Homebrew:
 
 #+BEGIN_SRC sh
   brew install tpoulsen/homebrew-tools/generate-component
