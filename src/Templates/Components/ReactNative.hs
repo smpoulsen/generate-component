@@ -5,6 +5,7 @@ module Templates.Components.ReactNative where
 import           Templates.Components
 import           Text.InterpolatedString.Perl6 (q, qc)
 import           Types
+import           Types.PropTypes
 
 nativeComponentTemplate :: ComponentType -> Maybe [Prop] -> Template
 nativeComponentTemplate cType propTypes =

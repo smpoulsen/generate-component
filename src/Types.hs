@@ -35,15 +35,6 @@ data ComponentType = ES6Class | CreateClass | Functional
 instance ToJSON ComponentType
 instance FromJSON ComponentType
 
-data Prop = Prop
-  { _name     :: Text
-  , _propType :: PropType
-  } deriving (Generic, Eq, Ord)
-instance Show Prop where
-  show (Prop n t) =
-    unpack $ n <> ": " <> propTypeDisplay t
-makeLenses ''Prop
-
 data Config = Config
   { _projectType      :: ProjectType
   , _componentType    :: ComponentType
@@ -92,6 +83,7 @@ instance Arbitrary ComponentType where
 instance Arbitrary Prop where
   arbitrary = Prop <$>
         genText
+    <*> arbitrary
     <*> arbitrary
 
 {--| Generate a filepath using characters 0-9 and A-z --}

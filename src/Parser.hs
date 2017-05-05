@@ -9,6 +9,7 @@ import           Options.Applicative
 import           Parser.PropType           (optparseProps)
 import           Prelude                   hiding (words)
 import           Types
+import           Types.PropTypes
 
 {--| Command line argument parser --}
 opts :: ParserInfo Command

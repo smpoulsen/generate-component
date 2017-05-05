@@ -6,6 +6,7 @@ module Templates.Components.React where
 import           Templates.Components
 import           Text.InterpolatedString.Perl6 (q, qc)
 import           Types
+import           Types.PropTypes
 
 reactComponentTemplate :: ComponentType -> Maybe [Prop] -> Template
 reactComponentTemplate cType propTypes =

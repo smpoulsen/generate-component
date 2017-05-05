@@ -6,6 +6,7 @@ import           Templates.Components.ReactNative
 import           Templates.Containers
 import           Templates.Styles
 import           Types
+import           Types.PropTypes
 
 templatesToGenerate :: ProjectType -> ComponentType -> Maybe [Prop] -> Bool -> [Template]
 templatesToGenerate p c propTypes container =

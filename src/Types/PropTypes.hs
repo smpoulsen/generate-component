@@ -1,12 +1,13 @@
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 
 module Types.PropTypes where
 
-import           Data.Aeson                (FromJSON, ToJSON)
+import           Control.Lens              hiding (elements)
 import           Data.Char                 (toLower)
 import           Data.Monoid               ((<>))
-import           Data.Text                 (Text, intercalate, pack, unwords)
+import           Data.Text                 (Text, intercalate, pack, unpack, unwords)
 import           GHC.Generics
 import           Prelude                   hiding (unwords)
 import           Test.QuickCheck           (Gen, choose)
@@ -52,10 +53,8 @@ data PropType =
   | ObjectOf PropType
   | OneOf [Text]
   | InstanceOf Text
-  | Shape [(Text, PropType)]
-  deriving (Generic, Read, Show, Eq, Ord)
-instance FromJSON PropType
-instance ToJSON PropType
+  | Shape [Prop]
+  deriving (Generic, Show, Eq, Ord)
 
 {- Stringifying proptypes for display in templates. -}
 propTypeDisplay :: PropType -> Text
@@ -75,13 +74,28 @@ propTypeDisplay p =
       "PropTypes.shape({" <> unwords (formatKeyValue <$> t) <> "})"
     _ ->
       "PropTypes." <> (pack . toLowerCamelCase . show $ p)
-  where formatKeyValue (k, v) =
-          k <> ": " <> propTypeDisplay v <> ","
-
+  where formatKeyValue t =
+          pack $ show t <> ","
 
 toLowerCamelCase :: String -> String
 toLowerCamelCase (h:t) = toLower h : t
 toLowerCamelCase []    = ""
+
+data Prop = Prop
+  { _name     :: Text
+  , _propType :: PropType
+  , _required :: IsRequired
+  } deriving (Generic, Eq, Ord)
+instance Show Prop where
+  show (Prop n t r) =
+    case r of
+      Optional ->
+        unpack $ n <> ": " <> propTypeDisplay t
+      Required ->
+        unpack $ n <> ": " <> propTypeDisplay t <> ".isRequired"
+
+makeLenses ''Prop
+
 
 {- Testing -}
 instance Arbitrary PropType where
@@ -99,3 +113,11 @@ instance Arbitrary PropType where
       8 -> Node
       9 -> Element
       _ -> String
+
+instance Arbitrary IsRequired where
+  arbitrary = do
+    n <- choose (0, 1) :: Gen Int
+    return $ case n of
+      0 -> Optional
+      1 -> Required
+      _ -> Optional

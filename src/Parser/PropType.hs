@@ -21,7 +21,20 @@ parseProp = do
   A.string ":"
   A.skipSpace
   propType <- parsePropType
-  return $ Prop propName propType
+  required <- maybeParser parseRequiredStatus
+  return $ case required of
+    Nothing ->
+      Prop propName propType Optional
+    Just _ ->
+      Prop propName propType Required
+
+maybeParser :: A.Parser a -> A.Parser (Maybe a)
+maybeParser p = A.option Nothing (Just <$> p)
+
+parseRequiredStatus :: A.Parser IsRequired
+parseRequiredStatus = do
+  requiredStatus <- A.string ".isRequired"
+  return Required
 
 parsePropType :: A.Parser PropType
 parsePropType =
@@ -80,17 +93,9 @@ parseOneOf = do
 parseShape :: A.Parser PropType
 parseShape = do
   A.string "shape({"
-  keyValuePairs <- commaSeparated parseKeyValue
+  keyValuePairs <- commaSeparated parseProp
   A.string "})"
   return $ Shape keyValuePairs
-
-parseKeyValue :: A.Parser (Text, PropType)
-parseKeyValue = do
-  key <- liftA pack $ A.many' (A.letter <|> A.digit)
-  A.string ":"
-  A.skipSpace
-  propType <- parsePropType
-  return $ (key, propType)
 
 commaSeparated :: A.Parser a -> A.Parser [a]
 commaSeparated p = p `A.sepBy` (A.string ", " <|> A.string ",")
