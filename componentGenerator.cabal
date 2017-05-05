@@ -23,6 +23,7 @@ executable generate-component
   other-modules:       ComponentGenerator
                      , Config
                      , Parser
+                     , Parser.PropType
                      , Templates
                      , Templates.Config
                      , Templates.Components
@@ -36,6 +37,7 @@ executable generate-component
   build-depends:       base >=4.9 && <4.10
                      , QuickCheck
                      , aeson
+                     , attoparsec
                      , interpolatedstring-perl6
                      , lens
                      , optparse-applicative >= 0.12
@@ -59,6 +61,7 @@ test-suite test
   other-modules:       ComponentGenerator
                      , Config
                      , Parser
+                     , Parser.PropType
                      , Templates
                      , Templates.Config
                      , Templates.Components
@@ -71,6 +74,7 @@ test-suite test
   build-depends:       base >= 4 && < 5
                      , QuickCheck
                      , aeson
+                     , attoparsec
                      , interpolatedstring-perl6
                      , lens
                      , optparse-applicative >= 0.12

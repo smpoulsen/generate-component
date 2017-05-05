@@ -6,6 +6,7 @@ import           Data.Monoid               ((<>))
 import           Data.Text                 (pack, split, unpack, words)
 import           Filesystem.Path.CurrentOS (fromText)
 import           Options.Applicative
+import           Parser.PropType           (optparseProps)
 import           Prelude                   hiding (words)
 import           Types
 
@@ -62,6 +63,4 @@ parsePropTypes =
   <> help "Component props and types (enclosed in quotes) - e.g. -p \"id:number name:string\"" )
 
 parsePropTypesReader :: ReadM [Prop]
-parsePropTypesReader = eitherReader $ \s ->
-  pure $ toPropType $ split (== ':') <$> (words . pack $ s)
-  where toPropType = fmap (\x -> Prop (Prelude.head x) (read . unpack . Prelude.last $ x))
+parsePropTypesReader = optparseProps

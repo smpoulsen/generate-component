@@ -12,6 +12,9 @@ import           Prelude                   hiding (unwords)
 import           Test.QuickCheck           (Gen, choose)
 import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
 
+data IsRequired = Required | Optional
+  deriving (Generic, Read, Show, Eq, Ord)
+
 {-
 Atomic types
 
@@ -54,13 +57,7 @@ data PropType =
 instance FromJSON PropType
 instance ToJSON PropType
 
-toLowerCamelCase :: String -> String
-toLowerCamelCase (h:t) = toLower h : t
-toLowerCamelCase []    = ""
-
-data IsRequired = Required | Optional
-  deriving (Generic, Read, Show, Eq, Ord)
-
+{- Stringifying proptypes for display in templates. -}
 propTypeDisplay :: PropType -> Text
 propTypeDisplay p =
   case p of
@@ -81,6 +78,12 @@ propTypeDisplay p =
   where formatKeyValue (k, v) =
           k <> ": " <> propTypeDisplay v <> ","
 
+
+toLowerCamelCase :: String -> String
+toLowerCamelCase (h:t) = toLower h : t
+toLowerCamelCase []    = ""
+
+{- Testing -}
 instance Arbitrary PropType where
   arbitrary = do
     n <- choose (0, 9) :: Gen Int

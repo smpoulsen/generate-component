@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes       #-}
+
 module Templates.Components.React where
 
 import           Templates.Components
@@ -24,7 +25,6 @@ functionalReactComponent p = Template "COMPONENT.js" [qc|
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import \{render} from 'react-dom';
 
 const COMPONENT = (\{{propNames p}}) => (
   <div>
@@ -49,7 +49,6 @@ es6ReactComponent p = Template "COMPONENT.js" [qc|
 
 import React, \{Component} from 'react';
 import PropTypes from 'prop-types';
-import \{render} from 'react-dom';
 
 class COMPONENT extends Component \{
   static propTypes = \{
@@ -79,7 +78,6 @@ createClassReactComponent p = Template "COMPONENT.js" [qc|
 import React from 'react';
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
-import \{render} from 'react-dom';
 
 const COMPONENT = createReactClass(\{
   propTypes: \{
