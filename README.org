@@ -1,44 +1,44 @@
 * React Component Generator
-  [[https://travis-ci.org/tpoulsen/generate-component][https://travis-ci.org/tpoulsen/generate-component.svg?branch=master]]
+[[https://travis-ci.org/tpoulsen/generate-component][https://travis-ci.org/tpoulsen/generate-component.svg?branch=master]]
 
 ** Contents
 
-  + [[#installation][Installation]]
-  + [[#usage][Usage]]
-  + [[#commands][Commands]]
-    + [[#init][Init]]
-    + [[#gen][Gen]]
-      + [[#project-type][Project Type]]
-      + [[#redux][Redux]]
-      + [[#component-types][Component Types]]
-      + [[#proptypes][PropTypes]]
-  + [[#examples][Examples]]
++ [[#installation][Installation]]
++ [[#usage][Usage]]
++ [[#commands][Commands]]
+  + [[#init][Init]]
+  + [[#gen][Gen]]
+    + [[#project-type][Project Type]]
+    + [[#redux][Redux]]
+    + [[#component-types][Component Types]]
+    + [[#props][Props]]
++ [[#examples][Examples]]
 
 ** Installation
 *** Pre-compiled:
 
-     Download [[https://github.com/tpoulsen/generate-component/releases/tag/v0.3.0.0][the tar.gz]] of the release; unarchive it and place in a directory that's in your path.
+Download [[https://github.com/tpoulsen/generate-component/releases/tag/v0.3.0.0][the tar.gz]] of the release; unarchive it and place in a directory that's in your path.
 
-     #+BEGIN_SRC sh
+#+BEGIN_SRC sh
        tar -xvzf generate-component.tar.gz
-     #+END_SRC
+#+END_SRC
 
 *** From source:
 
-    You should have [[https://www.haskell.org/ghc/][GHC]] and [[https://www.haskell.org/cabal/][cabal]] or [[https://docs.haskellstack.org/en/stable/README/][stack]] installed.
+You should have [[https://www.haskell.org/ghc/][GHC]] and [[https://www.haskell.org/cabal/][cabal]] or [[https://docs.haskellstack.org/en/stable/README/][stack]] installed.
 
-    Installing `generate-component` is easiest with stack:
-    #+BEGIN_SRC sh
+Installing `generate-component` is easiest with stack:
+#+BEGIN_SRC sh
     git clone git@github.com:tpoulsen/generate-component.git
     stack install
-    #+END_SRC
+#+END_SRC
 
-    This compiles the program and puts the executable in ~/.local/bin~. If this is in your path, you now have the command ~generate-component~.
+This compiles the program and puts the executable in ~/.local/bin~. If this is in your path, you now have the command ~generate-component~.
 
 ** Usage
-   You can learn about the available command line options with ~generate-component --help~ (or ~-h~).
+You can learn about the available command line options with ~generate-component --help~ (or ~-h~).
 
-   #+BEGIN_SRC sh
+#+BEGIN_SRC sh
      stack install
      # ... Output omitted for brevity ... #
      Copied executables to $HOME/.local/bin:
@@ -58,17 +58,17 @@
      Available commands:
      init                     Create a config file
      gen                      Generate a component
-   #+END_SRC
+#+END_SRC
 
 ** Commands
-   ~generate-component~ has two subcommands:
-     + ~init~
-     + ~gen~
+~generate-component~ has two subcommands:
++ ~init~
++ ~gen~
 *** ~init~
-    Initializes ~generate-component~ with a config file in the current directory. The config file specifies defaults such as project type, default component directory, and the default type of components to generate.
+Initializes ~generate-component~ with a config file in the current directory. The config file specifies defaults such as project type, default component directory, and the default type of components to generate.
 *** ~gen~
-    Generates a component:
-    #+BEGIN_SRC sh
+Generates a component:
+#+BEGIN_SRC sh
       $ generate-component gen --help
       Usage: generate-component gen NAME [-d|--component-directory DIR]
       [-r|--redux-container] [-n|--react-native]
@@ -86,31 +86,57 @@
       -p,--proptypes ARG       Component props and types (enclosed in quotes) - e.g.
                                -p "id:number name:string.isRequired"
       -h,--help                Show this help text
-    #+END_SRC
-    Command line arguments supersede config file settings.
+#+END_SRC
+Command line arguments supersede config file settings.
 
 **** Project Type
-     ~React | ReactNative~
-     This can be set in the config file, ~.generate-component.yaml~.
-     If ~-n~ is provided as a command line option, the config will be overridden and native files will be generated.
+~React | ReactNative~
+This can be set in the config file, ~.generate-component.yaml~.
+If ~-n~ is provided as a command line option, the config will be overridden and native files will be generated.
 
 **** Redux
-     If the ~-r~ option is provided, a Redux connected container component will be generated.
+If the ~-r~ option is provided, a Redux connected container component will be generated.
 
 **** Component Types
-     ~ES6Class | CreateClass | Functional~
-     This can be set in the config file as the default type of component to generate.
-     If ~-t~ and a valid type (e.g. ~-t ES6Class~) are provided on the command line, the provided type will be generated.
+~ES6Class | CreateClass | Functional~
+This can be set in the config file as the default type of component to generate.
+If ~-t~ and a valid type (e.g. ~-t ES6Class~) are provided on the command line, the provided type will be generated.
 
-**** PropTypes
-     PropTypes can be provided in the command line with the ~-p~ flag.
-     Providing them will pre-fill the `propTypes` declaration in the generated files and the parameters to a functional components.
-     They must be provided as colon separated ~name:propType~ values in a string, e.g:
-     ~-p "name:string id:number age:number"
+**** Props
+Props can be provided in the command line with the ~-p~ flag.
+
+Providing props pre-fills the ~propTypes~ declaration in the generated files and the parameters to a functional components.
+
+Props must be provided as colon separated ~name:propType[.isRequired]~ values in a string, e.g: ~-p "name:string id:number age:number.isRequired"~
+
+If the ~propType~ is followed by ~.isRequired~, the prop will be required, otherwise it is considered optional.
+
+Valid PropTypes are:
+#+BEGIN_SRC  js
+  Prop := "name:propType[.isRequired]"
+
+  propType :=
+    any,
+    array,
+    bool,
+    func,
+    number,
+    object,
+    string,
+    symbol,
+    node,
+    element,
+    oneOfType([propType]),
+    arrayOf(propType),
+    objectOf(propType),
+    oneOf([Text]),
+    instanceOf(Text),
+    shape(Prop),
+#+END_SRC
 
 ** Examples
 *** Generating a React component:
-   #+BEGIN_SRC sh
+#+BEGIN_SRC sh
      generate-component Test
      Making directory at: ./app/components/Test
      Copying files...
@@ -118,20 +144,20 @@
      Writing ./app/components/Test/styles.js...
      Writing ./app/components/Test/index.js...
      Done
-   #+END_SRC
+#+END_SRC
 
 *** Generating a React component in an arbitrary directory:
-   #+BEGIN_SRC sh
+#+BEGIN_SRC sh
      generate-component -d dir Test
      Making directory at: dir/Test
      Copying files...
      Writing dir/Test/Test.js...
      Writing dir/Test/index.js...
      Done
-   #+END_SRC
+#+END_SRC
 
 *** Generating a React Native component:
-   #+BEGIN_SRC sh
+#+BEGIN_SRC sh
      generate-component -n Test
      Making directory at: ./app/components/Test
      Copying files...
@@ -139,10 +165,10 @@
      Writing ./app/components/Test/styles.js...
      Writing ./app/components/Test/index.js...
      Done
-   #+END_SRC
+#+END_SRC
 
 *** Generating a component with a Redux container (works for React and React Native components):
-   #+BEGIN_SRC sh
+#+BEGIN_SRC sh
      generate-component -c Test
      Making directory at: ./app/components/Test
      Copying files...
@@ -151,16 +177,16 @@
      Writing ./app/components/Test/styles.js...
      Writing ./app/components/Test/index.js...
      Done
-   #+END_SRC
+#+END_SRC
 
 *** Attempting to generate a component that already exists:
-   #+BEGIN_SRC sh
+#+BEGIN_SRC sh
      generate-component Test
      Component directory exists; exiting without action.
      Done
-   #+END_SRC
+#+END_SRC
 ** Testing
 *** To run the tests:
-    #+BEGIN_SRC sh
+#+BEGIN_SRC sh
     stack test
-    #+END_SRC
+#+END_SRC

@@ -34,7 +34,7 @@ Atomic types
       PropTypes.arrayOf(t),
       PropTypes.objectOf(t),
       PropTypes.oneOf([Text]),
-      PropTypes.instanceOf([Text]),
+      PropTypes.instanceOf(Text),
       PropTypes.shape({key: value}),
 -}
 data PropType =
