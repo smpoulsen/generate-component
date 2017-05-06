@@ -23,6 +23,7 @@ executable generate-component
   other-modules:       ComponentGenerator
                      , Config
                      , Parser
+                     , Parser.PropType
                      , Templates
                      , Templates.Config
                      , Templates.Components
@@ -31,10 +32,12 @@ executable generate-component
                      , Templates.Containers
                      , Templates.Styles
                      , Types
+                     , Types.PropTypes
   -- other-extensions:    
   build-depends:       base >=4.9 && <4.10
                      , QuickCheck
                      , aeson
+                     , attoparsec
                      , interpolatedstring-perl6
                      , lens
                      , optparse-applicative >= 0.12
@@ -58,6 +61,8 @@ test-suite test
   other-modules:       ComponentGenerator
                      , Config
                      , Parser
+                     , Parser.PropType
+                     , ParserSpec
                      , Templates
                      , Templates.Config
                      , Templates.Components
@@ -66,9 +71,12 @@ test-suite test
                      , Templates.Containers
                      , Templates.Styles
                      , Types
+                     , Types.PropTypes
   build-depends:       base >= 4 && < 5
                      , QuickCheck
                      , aeson
+                     , attoparsec
+                     , HUnit
                      , interpolatedstring-perl6
                      , lens
                      , optparse-applicative >= 0.12
@@ -76,6 +84,7 @@ test-suite test
                      , quickcheck-instances
                      , system-filepath
                      , tasty >= 0.7
+                     , tasty-hunit
                      , tasty-quickcheck
                      , text
                      , turtle == 1.2.8

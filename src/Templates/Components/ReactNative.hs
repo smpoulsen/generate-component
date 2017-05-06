@@ -5,15 +5,16 @@ module Templates.Components.ReactNative where
 import           Templates.Components
 import           Text.InterpolatedString.Perl6 (q, qc)
 import           Types
+import           Types.PropTypes
 
-nativeComponentTemplate :: ComponentType -> Maybe [PropType] -> Template
+nativeComponentTemplate :: ComponentType -> Maybe [Prop] -> Template
 nativeComponentTemplate cType propTypes =
   case cType of
     Functional  -> functionalNativeComponent propTypes
     ES6Class    -> es6NativeComponent propTypes
     CreateClass -> createClassNativeComponent propTypes
 
-functionalNativeComponent :: Maybe [PropType] -> Template
+functionalNativeComponent :: Maybe [Prop] -> Template
 functionalNativeComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*
@@ -40,7 +41,7 @@ COMPONENT.propTypes = \{
 export default COMPONENT;
 |]
 
-es6NativeComponent :: Maybe [PropType] -> Template
+es6NativeComponent :: Maybe [Prop] -> Template
 es6NativeComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*
@@ -71,7 +72,7 @@ class COMPONENT extends Component \{
 export default COMPONENT;
 |]
 
-createClassNativeComponent :: Maybe [PropType] -> Template
+createClassNativeComponent :: Maybe [Prop] -> Template
 createClassNativeComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*

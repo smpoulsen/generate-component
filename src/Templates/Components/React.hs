@@ -1,19 +1,21 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes       #-}
+
 module Templates.Components.React where
 
 import           Templates.Components
 import           Text.InterpolatedString.Perl6 (q, qc)
 import           Types
+import           Types.PropTypes
 
-reactComponentTemplate :: ComponentType -> Maybe [PropType] -> Template
+reactComponentTemplate :: ComponentType -> Maybe [Prop] -> Template
 reactComponentTemplate cType propTypes =
   case cType of
     Functional  -> functionalReactComponent propTypes
     ES6Class    -> es6ReactComponent propTypes
     CreateClass -> createClassReactComponent propTypes
 
-functionalReactComponent :: Maybe [PropType] -> Template
+functionalReactComponent :: Maybe [Prop] -> Template
 functionalReactComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*
@@ -24,7 +26,6 @@ functionalReactComponent p = Template "COMPONENT.js" [qc|
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import \{render} from 'react-dom';
 
 const COMPONENT = (\{{propNames p}}) => (
   <div>
@@ -38,7 +39,7 @@ COMPONENT.propTypes = \{
 export default COMPONENT;
 |]
 
-es6ReactComponent :: Maybe [PropType] -> Template
+es6ReactComponent :: Maybe [Prop] -> Template
 es6ReactComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*
@@ -49,7 +50,6 @@ es6ReactComponent p = Template "COMPONENT.js" [qc|
 
 import React, \{Component} from 'react';
 import PropTypes from 'prop-types';
-import \{render} from 'react-dom';
 
 class COMPONENT extends Component \{
   static propTypes = \{
@@ -67,7 +67,7 @@ class COMPONENT extends Component \{
 export default COMPONENT;
 |]
 
-createClassReactComponent :: Maybe [PropType] -> Template
+createClassReactComponent :: Maybe [Prop] -> Template
 createClassReactComponent p = Template "COMPONENT.js" [qc|
 // @flow
 /*
@@ -79,7 +79,6 @@ createClassReactComponent p = Template "COMPONENT.js" [qc|
 import React from 'react';
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
-import \{render} from 'react-dom';
 
 const COMPONENT = createReactClass(\{
   propTypes: \{

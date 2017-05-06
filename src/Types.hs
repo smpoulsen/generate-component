@@ -5,18 +5,18 @@
 module Types where
 
 import           Control.Lens              hiding (elements)
-import           Data.Aeson                (decode, withObject)
+import           Data.Aeson                (withObject)
 import           Data.Char                 (chr)
 import           Data.Monoid               ((<>))
 import           Data.Text
 import           Data.Yaml                 (FromJSON, ToJSON, parseJSON, (.:))
 import           Filesystem.Path.CurrentOS (FilePath, fromText, valid)
 import           GHC.Generics
-import           Options.Applicative       (Parser)
 import           Test.QuickCheck           (Gen, choose, elements, listOf1,
                                             oneof, suchThat)
 import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
 import           Test.QuickCheck.Instances ()
+import           Types.PropTypes
 
 data Template = Template
   { filename :: Text
@@ -34,15 +34,6 @@ data ComponentType = ES6Class | CreateClass | Functional
   deriving (Generic, Read, Show, Eq, Ord)
 instance ToJSON ComponentType
 instance FromJSON ComponentType
-
-data PropType = PropType
-  { _name     :: Text
-  , _propType :: Text
-  } deriving (Generic, Eq, Ord)
-instance Show PropType where
-  show (PropType n t) =
-    unpack $ n <> ": PropTypes." <> t
-makeLenses ''PropType
 
 data Config = Config
   { _projectType      :: ProjectType
@@ -62,7 +53,7 @@ data Settings = Settings
   , _sMakeContainer :: Bool
   , _sProjectType   :: ProjectType
   , _sComponentType :: Maybe ComponentType
-  , _sPropTypes     :: Maybe [PropType]
+  , _sPropTypes     :: Maybe [Prop]
   }
   deriving (Eq, Show, Ord)
 makeLenses ''Settings
@@ -89,10 +80,11 @@ instance Arbitrary ProjectType where
 instance Arbitrary ComponentType where
   arbitrary = elements [ES6Class, CreateClass, Functional]
 
-instance Arbitrary PropType where
-  arbitrary = PropType <$>
+instance Arbitrary Prop where
+  arbitrary = Prop <$>
         genText
-    <*> genText
+    <*> arbitrary
+    <*> arbitrary
 
 {--| Generate a filepath using characters 0-9 and A-z --}
 genFilePath :: Gen OSFilePath

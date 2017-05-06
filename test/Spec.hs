@@ -1,4 +1,3 @@
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes       #-}
 
@@ -7,27 +6,39 @@ module Main where
 import           Control.Lens              hiding (pre, re, (<.>))
 import           Data.List
 import           Data.Maybe                (fromJust)
-import           Data.Text                 (length, Text)
+import           Data.Text                 (Text, length)
 import           Filesystem.Path.CurrentOS (fromText, valid, (<.>), (</>))
 import           Prelude                   hiding (length)
 import           Test.QuickCheck
-import           Test.QuickCheck.Monadic
+import           Test.QuickCheck.Monadic   as QCM
 import           Test.Tasty
+import           Test.Tasty.HUnit
 import           Test.Tasty.QuickCheck     as QC
 import           Text.Regex.PCRE.Heavy
-import           Turtle.Prelude            (testdir, testfile, readTextFile)
+import           Turtle.Prelude            (readTextFile, testdir, testfile)
 
 import           ComponentGenerator
+import           ParserSpec
 import           Types
 
 main :: IO ()
 main = defaultMain tests
 
 tests :: TestTree
-tests = testGroup "Tests" [properties]
+tests = testGroup "Tests" [properties, unitTests]
 
 properties :: TestTree
 properties = testGroup "Properties" [qcProps]
+
+unitTests :: TestTree
+unitTests = testGroup "(HUnit tests)"
+  [ testCase "parse instanceOf" testParseInstanceOf
+  , testCase "parse arrayOf" testParseArrayOf
+  , testCase "parse objectOf" testParseObjectOf
+  , testCase "parse oneOfType" testParseOneOfType
+  , testCase "parse oneOf" testParseOneOf
+  , testCase "parse shape" testParseShape
+  ]
 
 qcProps :: TestTree
 qcProps = testGroup "(checked by QuickCheck)"
@@ -51,8 +62,8 @@ prop_makesFiles settings@(Settings componentName (Just componentPath) _ native _
   then mapM testfile $ (componentDir </>) <$> [componentNamePath <.> "js", "index.js", "styles.js"]
   else mapM testfile $ (componentDir </>) <$> [componentNamePath <.> "js", "index.js"]
 
-  assert dirExists
-  assert $ and filesExist
+  QCM.assert dirExists
+  QCM.assert $ and filesExist
 
 prop_replacePlaceholderText :: Settings -> Property
 prop_replacePlaceholderText settings@(Settings componentName (Just componentPath) _ _ _ _) = monadicIO $ do
@@ -69,7 +80,7 @@ prop_replacePlaceholderText settings@(Settings componentName (Just componentPath
 
   let placeholderTextReplaced = (=~ [re|COMPONENT|]) <$> [component, index]
 
-  assert $ and $ not <$> placeholderTextReplaced
+  QCM.assert $ and $ not <$> placeholderTextReplaced
 
 -- Setup/make files
 makeFiles :: Settings -> IO ()

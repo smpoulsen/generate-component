@@ -3,11 +3,13 @@
 module Parser where
 
 import           Data.Monoid               ((<>))
-import           Data.Text                 (pack, split, words)
+import           Data.Text                 (pack, split, unpack, words)
 import           Filesystem.Path.CurrentOS (fromText)
 import           Options.Applicative
+import           Parser.PropType           (optparseProps)
 import           Prelude                   hiding (words)
 import           Types
+import           Types.PropTypes
 
 {--| Command line argument parser --}
 opts :: ParserInfo Command
@@ -54,14 +56,12 @@ parseComponentType =
   <> short 't'
   <> help "The type of component to generate. Valid options: ES6Class | CreateClass | Functional" )
 
-parsePropTypes :: Parser (Maybe [PropType])
+parsePropTypes :: Parser (Maybe [Prop])
 parsePropTypes =
   optional $ option parsePropTypesReader
   ( long "proptypes"
   <> short 'p'
   <> help "Component props and types (enclosed in quotes) - e.g. -p \"id:number name:string\"" )
 
-parsePropTypesReader :: ReadM [PropType]
-parsePropTypesReader = eitherReader $ \s ->
-  pure $ toPropType $ split (== ':') <$> (words . pack $ s)
-  where toPropType = fmap (\x -> PropType (Prelude.head x) (Prelude.last x))
+parsePropTypesReader :: ReadM [Prop]
+parsePropTypesReader = optparseProps
