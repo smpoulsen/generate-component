@@ -2,7 +2,7 @@
 {-# LANGUAGE QuasiQuotes       #-}
 module Templates.Config where
 
-import           Text.InterpolatedString.Perl6 (q, qc)
+import           Text.InterpolatedString.Perl6 (q)
 import           Types
 
 configTemplate :: Template

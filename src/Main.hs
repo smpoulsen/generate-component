@@ -32,7 +32,7 @@ filePathToText = pack . encodeString
 
 initializeWithConfigFile :: IO ()
 initializeWithConfigFile = do
-  appRoot <- projectRoot
+  appRoot <- pwd
   let configLocation = appRoot </> (fromText . filename $ configTemplate)
   dirExists <- testfile configLocation
   if dirExists
