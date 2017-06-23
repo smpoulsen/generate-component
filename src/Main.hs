@@ -9,9 +9,11 @@ import           Config
 import           Control.Lens              (over)
 import           Data.Monoid               ((<>))
 import           Data.Text                 (Text, pack)
+import           Data.Version              (showVersion)
 import           Filesystem.Path.CurrentOS (encodeString, fromText, (</>))
 import           Options.Applicative       (execParser)
 import           Parser
+import           Paths_componentGenerator  (version)
 import           Templates.Config
 import           Turtle.Prelude
 import           Types
@@ -21,6 +23,7 @@ main = do
   command <- execParser opts
   case command of
     Init -> initializeWithConfigFile
+    Version -> putStrLn ("generate-component v" <> showVersion version)
     Generate settings -> do
       configFile <- readConfig
       appRoot <- projectRoot
@@ -32,7 +35,7 @@ filePathToText = pack . encodeString
 
 initializeWithConfigFile :: IO ()
 initializeWithConfigFile = do
-  appRoot <- projectRoot
+  appRoot <- pwd
   let configLocation = appRoot </> (fromText . filename $ configTemplate)
   dirExists <- testfile configLocation
   if dirExists
