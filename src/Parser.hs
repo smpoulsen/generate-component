@@ -22,9 +22,13 @@ commandParser :: Parser Command
 commandParser = subparser $
      command "init" (info (initParser <**> helper) $ progDesc "Create a config file")
   <> command "gen" (info (settingsParser <**> helper) $ progDesc "Generate a component")
+  <> command "version" (info (versionParser <**> helper) $ progDesc "generate-component version")
 
 initParser :: Parser Command
 initParser = pure Init
+
+versionParser :: Parser Command
+versionParser = pure Version
 
 settingsParser :: Parser Command
 settingsParser = fmap Generate $ Settings <$>
