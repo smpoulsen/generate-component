@@ -4,13 +4,16 @@ module Parser.PropType where
 
 import           Control.Applicative
 import qualified Data.Attoparsec.Text as A
-import           Data.Text            (Text, pack)
+import           Data.Text            (pack)
 import           Options.Applicative
-import           Types
+--import           Types
 import           Types.PropTypes
 
 optparseProps :: ReadM [Prop]
-optparseProps = eitherReader (A.parseOnly (parseCLIPropTypes <* A.endOfInput) . pack)
+optparseProps = eitherReader $ \inp -> case runPropsParser inp of
+  Left _ -> Left "Unable to parse PropTypes;\n\t\tPlease see https://github.com/tpoulsen/generate-component#props for valid PropType values."
+  Right props -> Right props
+  where runPropsParser = A.parseOnly (parseCLIPropTypes <* A.endOfInput) . pack
 
 parseCLIPropTypes :: A.Parser [Prop]
 parseCLIPropTypes = parseProp `A.sepBy1'` A.space
@@ -33,7 +36,7 @@ maybeParser p = A.option Nothing (Just <$> p)
 
 parseRequiredStatus :: A.Parser IsRequired
 parseRequiredStatus = do
-  requiredStatus <- A.string ".isRequired"
+  _requiredStatus <- A.string ".isRequired"
   return Required
 
 parsePropType :: A.Parser PropType

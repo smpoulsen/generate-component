@@ -62,6 +62,7 @@ type CSettings = Settings
 
 data Command =
     Init
+  | Version
   | Generate CSettings
 
 {--| Testing --}

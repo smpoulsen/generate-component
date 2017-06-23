@@ -24,6 +24,7 @@ executable generate-component
                      , Config
                      , Parser
                      , Parser.PropType
+                     , Paths_componentGenerator
                      , Templates
                      , Templates.Config
                      , Templates.Components
