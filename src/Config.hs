@@ -20,9 +20,12 @@ projectRoot =
 findProjectRoot :: IO OSFilePath -> IO OSFilePath
 findProjectRoot dir = do
   isRoot <- hasConfigFile =<< dir
-  if isRoot
-  then dir
-  else findProjectRoot $ recurseUp =<< dir
+  isSystemRoot <- dir >>= (\d -> return $ d == fromText "/")
+  if isSystemRoot
+    then return $ fromText "."
+    else if isRoot
+      then dir
+      else findProjectRoot $ recurseUp =<< dir
 
 recurseUp :: OSFilePath -> IO OSFilePath
 recurseUp dir =
