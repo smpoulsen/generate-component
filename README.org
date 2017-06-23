@@ -65,14 +65,33 @@ You can learn about the available command line options with ~generate-component 
      Available commands:
      init                     Create a config file
      gen                      Generate a component
+     version                  generate-component version
 #+END_SRC
 
 ** Commands
-~generate-component~ has two subcommands:
+~generate-component~ has three subcommands:
 + ~init~
++ ~version~
 + ~gen~
 *** ~init~
 Initializes ~generate-component~ with a config file in the current directory. The config file specifies defaults such as project type, default component directory, and the default type of components to generate.
+
+A generated config file looks like this:
+#+BEGIN_SRC yaml
+  # Type of the current project; determines what files will be
+  # generated for a component.
+  # Valid values: React | ReactNative
+  projectType: ReactNative
+
+  # Default directory in which to generate components.
+  defaultDirectory: app/components
+
+  # Style of components to generate
+  # Valid values: CreateClass | ES6Class | Functional
+  componentType: ES6Class
+#+END_SRC
+*** ~version~
+Prints the current version of ~generate-component~ and exits.
 *** ~gen~
 Generates a component:
 #+BEGIN_SRC sh
@@ -96,6 +115,8 @@ Generates a component:
 #+END_SRC
 Command line arguments supersede config file settings.
 
+If no config file is found in the current directory, ~generate-component~ will attempt to locate one in higher in your directory tree. If none is found, it uses the values in the generated config file (see above) for project type and component type; the directory in which the component is generated is the current directory.
+
 **** Project Type
 ~React | ReactNative~
 This can be set in the config file, ~.generate-component.yaml~.
@@ -114,7 +135,7 @@ Props can be provided in the command line with the ~-p~ flag.
 
 Providing props pre-fills the ~propTypes~ declaration in the generated files and the parameters to a functional components.
 
-Props must be provided as colon separated ~name:propType[.isRequired]~ values in a string, e.g: ~-p "name:string id:number age:number.isRequired"~
+Props must be provided as colon separated ~name:propType[.isRequired]~ values in a string, e.g: ~-p "name:string id:number age:number.isRequired"\~
 
 If the ~propType~ is followed by ~.isRequired~, the prop will be required, otherwise it is considered optional.
 

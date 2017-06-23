@@ -62,5 +62,5 @@ defaultConfig :: IO Config
 defaultConfig = do
   d <- pwd
   let dir = toText d
-  let buildConfig = Config React ES6Class
+  let buildConfig = Config ReactNative ES6Class
   return $ either buildConfig buildConfig dir
