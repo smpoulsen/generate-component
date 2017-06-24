@@ -5,6 +5,7 @@
 
 + [[#installation][Installation]]
 + [[#usage][Usage]]
++ [[#compatibility][Compatibility]]
 + [[#commands][Commands]]
   + [[#init][Init]]
   + [[#gen][Gen]]
@@ -41,7 +42,12 @@ Installing `generate-component` is easiest with stack:
 #+END_SRC
 
 This compiles the program and puts the executable in ~/.local/bin~. If this is in your path, you now have the command ~generate-component~.
+** Compatibility
+Currently compatible with React 16 and lower; to be compatible with React v16, PropTypes is imported from the ~prop-types~ package.
 
+ES6 Classes are the default types of components that are generated. The option to generate ~React.createClass~ components is still provided; to maintain compatibility going forward, these are generated using ~createReactClass~ from the ~create-react-class~ package.
+
+Please make sure the appropriate packages are included in ~package.json~ to best make use of ~generate-component~.
 ** Usage
 You can learn about the available command line options with ~generate-component --help~ (or ~-h~).
 
