@@ -4,7 +4,7 @@
 module Templates.Components.React where
 
 import           Templates.Components
-import           Text.InterpolatedString.Perl6 (q, qc)
+import           Text.InterpolatedString.Perl6 (qc)
 import           Types
 import           Types.PropTypes
 
@@ -16,8 +16,7 @@ reactComponentTemplate cType propTypes =
     CreateClass -> createClassReactComponent propTypes
 
 functionalReactComponent :: Maybe [Prop] -> Template
-functionalReactComponent p = Template "COMPONENT.js" [qc|
-// @flow
+functionalReactComponent p = Template "COMPONENT.js" [qc|// @flow
 /*
    NOTE: This file was auto-generated for a component
    named "COMPONENT"; it is intended to be modified as
@@ -40,8 +39,7 @@ export default COMPONENT;
 |]
 
 es6ReactComponent :: Maybe [Prop] -> Template
-es6ReactComponent p = Template "COMPONENT.js" [qc|
-// @flow
+es6ReactComponent p = Template "COMPONENT.js" [qc|// @flow
 /*
    NOTE: This file was auto-generated for a component
    named "COMPONENT"; it is intended to be modified as
@@ -68,8 +66,7 @@ export default COMPONENT;
 |]
 
 createClassReactComponent :: Maybe [Prop] -> Template
-createClassReactComponent p = Template "COMPONENT.js" [qc|
-// @flow
+createClassReactComponent p = Template "COMPONENT.js" [qc|// @flow
 /*
    NOTE: This file was auto-generated for a component
    named "COMPONENT"; it is intended to be modified as

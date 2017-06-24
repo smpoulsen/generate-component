@@ -6,8 +6,8 @@ import           Text.InterpolatedString.Perl6 (q)
 import           Types
 
 configTemplate :: Template
-configTemplate = Template ".generate-component.yaml" [q|
-# Type of the current project; determines what files will be
+configTemplate = Template ".generate-component.yaml" config
+  where config = [q|# Type of the current project; determines what files will be
 # generated for a component.
 # Valid values: React | ReactNative
 projectType: ReactNative
