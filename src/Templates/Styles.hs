@@ -2,13 +2,11 @@
 {-# LANGUAGE QuasiQuotes       #-}
 module Templates.Styles where
 
-import           Data.Text                     (Text)
-import           Text.InterpolatedString.Perl6 (q, qc)
+import           Text.InterpolatedString.Perl6 (q)
 import           Types
 
 stylesTemplate :: Template
-stylesTemplate = Template "styles.js" [q|
-// @flow
+stylesTemplate = Template "styles.js" [q|// @flow
 /*
   NOTE: This file was auto-generated for a component
   named "COMPONENT"; it is intended to be modified as
