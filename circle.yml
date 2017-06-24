@@ -21,6 +21,11 @@ dependencies:
 
 test:
   pre:
-    - stack build
+    - stack install
   override:
     - stack test
+  post:
+    - tar -cvzf generate-component_ubuntu.tar.gz generate-component:
+        pwd: ../.local/bin
+    - mv $HOME/.local/bin/generate-component_ubuntu.tar.gz $CIRCLE_ARTIFACTS
+    - shasum -a 256 $CIRCLE_ARTIFACTS/generate-component_ubuntu.tar.gz > $CIRCLE_ARTIFACTS/generate-component.sha256
