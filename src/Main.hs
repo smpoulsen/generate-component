@@ -35,13 +35,14 @@ filePathToText = pack . encodeString
 
 initializeWithConfigFile :: IO ()
 initializeWithConfigFile = do
+  defaultConfigTemplate <- fmap configTemplate defaultConfig
   appRoot <- pwd
-  let configLocation = appRoot </> (fromText . filename $ configTemplate)
-  dirExists <- testfile configLocation
-  if dirExists
-    then echo $ filePathToText configLocation <> " already exists; exiting without action."
+  let configPath = appRoot </> (fromText . filename $ defaultConfigTemplate)
+  configFileExists <- testfile configPath
+  if configFileExists
+  then echo $ filePathToText configPath <> " already exists; exiting without action."
   else do
     echo "Writing config file:"
-    echo $ contents configTemplate
-    writeTextFile configLocation  (contents configTemplate)
-    echo $ "Config generated at " <> filePathToText configLocation
+    echo $ contents defaultConfigTemplate
+    writeTextFile configPath  (contents defaultConfigTemplate)
+    echo $ "Config generated at " <> filePathToText configPath
