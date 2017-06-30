@@ -7,7 +7,6 @@ module Types where
 import           Control.Lens              hiding (elements)
 import           Data.Aeson                (withObject)
 import           Data.Char                 (chr)
-import           Data.Monoid               ((<>))
 import           Data.Text
 import           Data.Yaml                 (FromJSON, ToJSON, parseJSON, (.:))
 import           Filesystem.Path.CurrentOS (FilePath, fromText, valid)
@@ -26,7 +25,7 @@ data Template = Template
 type OSFilePath = Filesystem.Path.CurrentOS.FilePath
 
 data ProjectType = React | ReactNative
-  deriving (Generic, Show, Eq, Ord)
+  deriving (Generic, Read, Show, Eq, Ord)
 instance ToJSON ProjectType
 instance FromJSON ProjectType
 
@@ -38,14 +37,16 @@ instance FromJSON ComponentType
 data Config = Config
   { _projectType      :: ProjectType
   , _componentType    :: ComponentType
-  , _defaultDirectory :: Text
+  , _defaultDirectory :: OSFilePath
   } deriving (Generic, Show)
 makeLenses ''Config
 instance FromJSON Config where
-  parseJSON = withObject "Config" $ \v -> Config
-    <$> v .: "projectType"
-    <*> v .: "componentType"
-    <*> v .: "defaultDirectory"
+  parseJSON = withObject "Config" $ \v -> do
+    pType   <- v .: "projectType"
+    cType   <- v .: "componentType"
+    dirText <- v .: "defaultDirectory"
+    let dir = fromText dirText
+    return $ Config pType cType dir
 
 data Settings = Settings
   { _sComponentName :: Text
@@ -60,8 +61,16 @@ makeLenses ''Settings
 
 type CSettings = Settings
 
+{-- Config from the command line --}
+data InitConfig = InitConfig
+  { _cProjectType      :: Maybe ProjectType
+  , _cComponentType    :: Maybe ComponentType
+  , _cDefaultDirectory :: Maybe OSFilePath
+  } deriving (Generic, Show)
+makeLenses ''InitConfig
+
 data Command =
-    Init
+    Init InitConfig
   | Version
   | Generate CSettings
 

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-| A generator for React Native components.
- -| Travis Poulsen - 2016
+{-| A generator for React and React Native components.
+ -| Travis Poulsen - 2016-2017
 -}
 module Main where
 
@@ -22,7 +22,7 @@ main :: IO ()
 main = do
   command <- execParser opts
   case command of
-    Init -> initializeWithConfigFile
+    Init config -> initializeWithConfigFile config
     Version -> putStrLn ("generate-component v" <> showVersion version)
     Generate settings -> do
       configFile <- readConfig
@@ -33,9 +33,9 @@ main = do
 filePathToText :: OSFilePath -> Text
 filePathToText = pack . encodeString
 
-initializeWithConfigFile :: IO ()
-initializeWithConfigFile = do
-  defaultConfigTemplate <- fmap configTemplate defaultConfig
+initializeWithConfigFile :: InitConfig -> IO ()
+initializeWithConfigFile config = do
+  defaultConfigTemplate <- configTemplate <$> mergeDefaultConfg config
   appRoot <- pwd
   let configPath = appRoot </> (fromText . filename $ defaultConfigTemplate)
   configFileExists <- testfile configPath
