@@ -3,8 +3,9 @@
 module Config where
 
 import           Control.Lens              ((&), (.~), (^.))
+import           Data.Maybe                (fromMaybe)
 import           Data.Yaml                 (ParseException, decodeFileEither)
-import           Filesystem.Path.CurrentOS (encodeString, fromText, parent, toText,
+import           Filesystem.Path.CurrentOS (encodeString, fromText, parent,
                                             (</>))
 import           Turtle.Prelude
 import           Types
@@ -45,7 +46,7 @@ readConfig = do
 configFromEither :: Either ParseException Config -> IO Config
 configFromEither c =
   case c of
-    Left _e -> defaultConfig
+    Left _e      -> defaultConfig
     Right config -> return config
 
 mergeConfig :: Config -> Settings -> Settings
@@ -55,7 +56,7 @@ mergeConfig c s =
     & sComponentType .~ cType
   where
     dir = case s ^. sComponentDir of
-      Nothing -> Just $ fromText $ c ^. defaultDirectory
+      Nothing -> Just $ c ^. defaultDirectory
       Just d  -> Just d
     cType = case s ^. sComponentType of
       Nothing -> Just $ c ^. componentType
@@ -63,7 +64,17 @@ mergeConfig c s =
 
 defaultConfig :: IO Config
 defaultConfig = do
-  d <- pwd
-  let dir = toText d
-  let buildConfig = Config ReactNative ES6Class
-  return $ either buildConfig buildConfig dir
+  currentDir <- pwd
+  hasComponentDir <- testdir $ currentDir </> fromText "app/components"
+  let dir = if hasComponentDir
+            then "app/components"
+            else "."
+  return $ Config ReactNative ES6Class dir
+
+mergeDefaultConfg :: InitConfig -> IO Config
+mergeDefaultConfg config = do
+  dflt <- defaultConfig
+  let pType = fromMaybe (dflt ^. projectType) (config ^. cProjectType)
+  let cType = fromMaybe (dflt ^. componentType) (config ^. cComponentType)
+  let dir = fromMaybe (dflt ^. defaultDirectory) (config ^. cDefaultDirectory)
+  return $ Config pType cType dir

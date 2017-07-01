@@ -17,7 +17,7 @@ import           Types
 {--| If the component doesn't already exist, creates component directory and requisite files. --}
 generateDesiredTemplates :: Settings -> IO ()
 generateDesiredTemplates settings@(Settings componentName (Just componentPath') _ _ _ _) = do
-  let componentPath = componentPath' </> componentNamePath
+  let componentPath = componentPath' </> fromText componentName
   let settings' = settings & sComponentDir .~ Just componentPath
   let componentGenerator = generateComponent settings'
   let runGenerator = mapM_ componentGenerator
@@ -29,7 +29,6 @@ generateDesiredTemplates settings@(Settings componentName (Just componentPath') 
       mktree componentPath
       echo "Copying files..."
       runGenerator $ determineTemplatesToGenerate settings'
-  where componentNamePath = fromText componentName
 generateDesiredTemplates _ = echo "Bad component path..."
 
 {--| Determines which templates to create based on command line arguments. --}

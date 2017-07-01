@@ -7,7 +7,6 @@ module Types where
 import           Control.Lens              hiding (elements)
 import           Data.Aeson                (withObject)
 import           Data.Char                 (chr)
-import           Data.Monoid               ((<>))
 import           Data.Text
 import           Data.Yaml                 (FromJSON, ToJSON, parseJSON, (.:))
 import           Filesystem.Path.CurrentOS (FilePath, fromText, valid)
@@ -18,6 +17,9 @@ import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
 import           Test.QuickCheck.Instances ()
 import           Types.PropTypes
 
+{--|
+ --| Templates
+ --}
 data Template = Template
   { filename :: Text
   , contents :: Text
@@ -26,7 +28,7 @@ data Template = Template
 type OSFilePath = Filesystem.Path.CurrentOS.FilePath
 
 data ProjectType = React | ReactNative
-  deriving (Generic, Show, Eq, Ord)
+  deriving (Generic, Read, Show, Eq, Ord)
 instance ToJSON ProjectType
 instance FromJSON ProjectType
 
@@ -35,17 +37,22 @@ data ComponentType = ES6Class | CreateClass | Functional
 instance ToJSON ComponentType
 instance FromJSON ComponentType
 
+{--|
+ --| Configuration/Settings
+ --}
 data Config = Config
   { _projectType      :: ProjectType
   , _componentType    :: ComponentType
-  , _defaultDirectory :: Text
+  , _defaultDirectory :: OSFilePath
   } deriving (Generic, Show)
 makeLenses ''Config
 instance FromJSON Config where
-  parseJSON = withObject "Config" $ \v -> Config
-    <$> v .: "projectType"
-    <*> v .: "componentType"
-    <*> v .: "defaultDirectory"
+  parseJSON = withObject "Config" $ \v -> do
+    pType   <- v .: "projectType"
+    cType   <- v .: "componentType"
+    dirText <- v .: "defaultDirectory"
+    let dir = fromText dirText
+    return $ Config pType cType dir
 
 data Settings = Settings
   { _sComponentName :: Text
@@ -60,12 +67,25 @@ makeLenses ''Settings
 
 type CSettings = Settings
 
+{-- Config from the command line --}
+data InitConfig = InitConfig
+  { _cProjectType      :: Maybe ProjectType
+  , _cComponentType    :: Maybe ComponentType
+  , _cDefaultDirectory :: Maybe OSFilePath
+  } deriving (Generic, Show)
+makeLenses ''InitConfig
+
+{--|
+ --| Parser
+ --}
 data Command =
-    Init
+    Init InitConfig
   | Version
   | Generate CSettings
 
-{--| Testing --}
+{--|
+ --| Testing
+ --}
 instance Arbitrary Settings where
   arbitrary = Settings <$>
         genComponentName
@@ -87,7 +107,11 @@ instance Arbitrary Prop where
     <*> arbitrary
     <*> arbitrary
 
-{--| Generate a filepath using characters 0-9 and A-z --}
+{--|
+ --| Test Helpers
+ --}
+
+-- Generate a filepath using characters 0-9 and A-z
 genFilePath :: Gen OSFilePath
 genFilePath = arbitraryFilePath `suchThat` valid
   where arbitraryFilePath = fromText <$> genText

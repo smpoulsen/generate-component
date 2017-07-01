@@ -25,7 +25,10 @@ commandParser = subparser $
   <> command "version" (info (versionParser <**> helper) $ progDesc "generate-component version")
 
 initParser :: Parser Command
-initParser = pure Init
+initParser = fmap Init $ InitConfig <$>
+      parseProjectType
+  <*> parseComponentType
+  <*> optional parseComponentDirectory
 
 versionParser :: Parser Command
 versionParser = pure Version
@@ -33,17 +36,17 @@ versionParser = pure Version
 settingsParser :: Parser Command
 settingsParser = fmap Generate $ Settings <$>
       fmap pack (Options.Applicative.argument str (metavar "NAME"))
-      <*> optional parseComponentDirectory
-      <*> switch
-        ( long "redux-container"
-       <> short 'r'
-       <> help "Create a redux connected container component" )
-      <*> flag React ReactNative
-        ( long "react-native"
-       <> short 'n'
-       <> help "Create a React Native component" )
-      <*> parseComponentType
-      <*> parsePropTypes
+  <*> optional parseComponentDirectory
+  <*> switch
+    ( long "redux-container"
+    <> short 'r'
+    <> help "Create a redux connected container component" )
+  <*> flag React ReactNative
+    ( long "react-native"
+    <> short 'n'
+    <> help "Create a React Native component" )
+  <*> parseComponentType
+  <*> parsePropTypes
 
 parseComponentDirectory :: Parser OSFilePath
 parseComponentDirectory =
@@ -52,6 +55,13 @@ parseComponentDirectory =
   <> short 'd'
   <> metavar "DIR"
   <> help "Directory in which to add the component. Relative to the project root." ))
+
+parseProjectType :: Parser (Maybe ProjectType)
+parseProjectType =
+  optional $ option auto
+  ( long "project-type"
+  <> short 'r'
+  <> help "The type of project. Valid options: React | ReactNative" )
 
 parseComponentType :: Parser (Maybe ComponentType)
 parseComponentType =
