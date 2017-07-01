@@ -17,6 +17,9 @@ import           Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
 import           Test.QuickCheck.Instances ()
 import           Types.PropTypes
 
+{--|
+ --| Templates
+ --}
 data Template = Template
   { filename :: Text
   , contents :: Text
@@ -34,6 +37,9 @@ data ComponentType = ES6Class | CreateClass | Functional
 instance ToJSON ComponentType
 instance FromJSON ComponentType
 
+{--|
+ --| Configuration/Settings
+ --}
 data Config = Config
   { _projectType      :: ProjectType
   , _componentType    :: ComponentType
@@ -69,12 +75,17 @@ data InitConfig = InitConfig
   } deriving (Generic, Show)
 makeLenses ''InitConfig
 
+{--|
+ --| Parser
+ --}
 data Command =
     Init InitConfig
   | Version
   | Generate CSettings
 
-{--| Testing --}
+{--|
+ --| Testing
+ --}
 instance Arbitrary Settings where
   arbitrary = Settings <$>
         genComponentName
@@ -96,7 +107,11 @@ instance Arbitrary Prop where
     <*> arbitrary
     <*> arbitrary
 
-{--| Generate a filepath using characters 0-9 and A-z --}
+{--|
+ --| Test Helpers
+ --}
+
+-- Generate a filepath using characters 0-9 and A-z
 genFilePath :: Gen OSFilePath
 genFilePath = arbitraryFilePath `suchThat` valid
   where arbitraryFilePath = fromText <$> genText

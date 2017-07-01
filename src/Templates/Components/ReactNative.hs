@@ -18,8 +18,7 @@ functionalNativeComponent :: Maybe [Prop] -> Template
 functionalNativeComponent p = Template "COMPONENT.js" [qc|// @flow
 /*
    NOTE: This file was auto-generated for a component
-   named "COMPONENT"; it is intended to be modified as
-   needed to be useful.
+   named "COMPONENT"; it should be modified as needed.
 */
 
 import React from 'react';
@@ -44,8 +43,7 @@ es6NativeComponent :: Maybe [Prop] -> Template
 es6NativeComponent p = Template "COMPONENT.js" [qc|// @flow
 /*
    NOTE: This file was auto-generated for a component
-   named "COMPONENT"; it is intended to be modified as
-   needed to be useful.
+   named "COMPONENT"; it should be modified as needed.
 */
 
 import React from 'react';
@@ -74,8 +72,7 @@ createClassNativeComponent :: Maybe [Prop] -> Template
 createClassNativeComponent p = Template "COMPONENT.js" [qc|// @flow
 /*
    NOTE: This file was auto-generated for a component
-   named "COMPONENT"; it is intended to be modified as
-   needed to be useful.
+   named "COMPONENT"; it should be modified as needed.
 */
 
 import React from 'react';

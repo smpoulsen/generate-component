@@ -76,9 +76,9 @@ prop_replacePlaceholderText settings@(Settings componentName (Just componentPath
   run $ makeFiles settings
 
   component <- run $ readTextFile $ componentDir </> componentNamePath <.> "js"
-  index <- run $ readTextFile $ componentDir </> "index.js"
+  indexFile <- run $ readTextFile $ componentDir </> "index.js"
 
-  let placeholderTextReplaced = (=~ [re|COMPONENT|]) <$> [component, index]
+  let placeholderTextReplaced = (=~ [re|COMPONENT|]) <$> [component, indexFile]
 
   QCM.assert $ and $ not <$> placeholderTextReplaced
 

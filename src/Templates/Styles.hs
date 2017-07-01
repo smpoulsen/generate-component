@@ -8,9 +8,8 @@ import           Types
 stylesTemplate :: Template
 stylesTemplate = Template "styles.js" [q|// @flow
 /*
-  NOTE: This file was auto-generated for a component
-  named "COMPONENT"; it is intended to be modified as
-  needed to be useful.
+   NOTE: This file was auto-generated for a component
+   named "COMPONENT"; it should be modified as needed.
 */
 
 import {StyleSheet} from 'react-native';
