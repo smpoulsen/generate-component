@@ -19,8 +19,7 @@ functionalReactComponent :: Maybe [Prop] -> Template
 functionalReactComponent p = Template "COMPONENT.js" [qc|// @flow
 /*
    NOTE: This file was auto-generated for a component
-   named "COMPONENT"; it is intended to be modified as
-   needed to be useful.
+   named "COMPONENT"; it should be modified as needed.
 */
 
 import React from 'react';
@@ -42,8 +41,7 @@ es6ReactComponent :: Maybe [Prop] -> Template
 es6ReactComponent p = Template "COMPONENT.js" [qc|// @flow
 /*
    NOTE: This file was auto-generated for a component
-   named "COMPONENT"; it is intended to be modified as
-   needed to be useful.
+   named "COMPONENT"; it should be modified as needed.
 */
 
 import React, \{Component} from 'react';
@@ -69,8 +67,7 @@ createClassReactComponent :: Maybe [Prop] -> Template
 createClassReactComponent p = Template "COMPONENT.js" [qc|// @flow
 /*
    NOTE: This file was auto-generated for a component
-   named "COMPONENT"; it is intended to be modified as
-   needed to be useful.
+   named "COMPONENT"; it should be modified as needed.
 */
 
 import React from 'react';

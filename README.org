@@ -82,6 +82,23 @@ You can learn about the available command line options with ~generate-component 
 *** ~init~
 Initializes ~generate-component~ with a config file in the current directory. The config file specifies defaults such as project type, default component directory, and the default type of components to generate.
 
+#+BEGIN_SRC sh
+  $ generate-component init --help
+  Usage: generate-component init [-r|--project-type ARG] [-t|--component-type ARG]
+  [-d|--component-directory DIR]
+  Create a config file
+
+  Available options:
+  -r,--project-type ARG    The type of project. Valid options: React |
+                           ReactNative
+  -t,--component-type ARG  The type of component to generate. Valid options:
+                           ES6Class | CreateClass | Functional
+  -d,--component-directory DIR
+                           Directory in which to add the component. Relative to
+                           the project root.
+  -h,--help                Show this help text
+#+END_SRC
+
 A generated config file looks like this:
 #+BEGIN_SRC yaml
   # Type of the current project; determines what files will be
