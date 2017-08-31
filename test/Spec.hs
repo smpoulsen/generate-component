@@ -47,7 +47,7 @@ qcProps = testGroup "(checked by QuickCheck)"
   ]
 
 prop_makesFiles :: Settings -> Property
-prop_makesFiles settings@(Settings componentName (Just componentPath) _ native _ _) = monadicIO $ do
+prop_makesFiles settings@(Settings componentName (Just componentPath) _ native componentType _) = monadicIO $ do
   let tmpDir = pure $ "/tmp" </> componentPath
   let componentNamePath = fromText componentName
   let tmpSettings = sComponentDir .~  tmpDir $ settings
@@ -58,15 +58,22 @@ prop_makesFiles settings@(Settings componentName (Just componentPath) _ native _
   run $ makeFiles settings
 
   dirExists <- testdir componentDir
+
   filesExist <- if native == ReactNative
-  then mapM testfile $ (componentDir </>) <$> [componentNamePath <.> "js", "index.js", "styles.js"]
-  else mapM testfile $ (componentDir </>) <$> [componentNamePath <.> "js", "index.js"]
+  then
+    if componentType == Just Reason
+      then mapM testfile $ (componentDir </>) <$> [componentNamePath <.> "re", "styles.js"]
+      else mapM testfile $ (componentDir </>) <$> [componentNamePath <.> "js", "index.js", "styles.js"]
+  else
+    if componentType == Just Reason
+      then mapM testfile $ (componentDir </>) <$> [componentNamePath <.> "re"]
+      else mapM testfile $ (componentDir </>) <$> [componentNamePath <.> "js", "index.js"]
 
   QCM.assert dirExists
   QCM.assert $ and filesExist
 
 prop_replacePlaceholderText :: Settings -> Property
-prop_replacePlaceholderText settings@(Settings componentName (Just componentPath) _ _ _ _) = monadicIO $ do
+prop_replacePlaceholderText settings@(Settings componentName (Just componentPath) _ _ componentType _) = monadicIO $ do
   let tmpDir = pure $ "/tmp" </> componentPath
   let componentNamePath = fromText componentName
 
@@ -75,12 +82,19 @@ prop_replacePlaceholderText settings@(Settings componentName (Just componentPath
   pre $ componentSettingsValid componentName componentPath
   run $ makeFiles settings
 
-  component <- run $ readTextFile $ componentDir </> componentNamePath <.> "js"
-  index <- run $ readTextFile $ componentDir </> "index.js"
+  let fileExtension = if componentType == Just Reason then "re" else "js"
+  component <- run $ readTextFile $ componentDir </> componentNamePath <.> fileExtension
 
-  let placeholderTextReplaced = (=~ [re|COMPONENT|]) <$> [component, index]
+  -- This needs to be better.
+  if componentType == Just Reason
+    then do
+      let placeholderTextReplaced = (=~ [re|COMPONENT|]) <$> [component]
+      QCM.assert $ and $ not <$> placeholderTextReplaced
+    else do
+      index <- run $ readTextFile $ componentDir </> "index.js"
+      let placeholderTextReplaced = (=~ [re|COMPONENT|]) <$> [component, index]
+      QCM.assert $ and $ not <$> placeholderTextReplaced
 
-  QCM.assert $ and $ not <$> placeholderTextReplaced
 
 -- Setup/make files
 makeFiles :: Settings -> IO ()

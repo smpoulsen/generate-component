@@ -93,7 +93,7 @@ A generated config file looks like this:
   defaultDirectory: app/components
 
   # Style of components to generate
-  # Valid values: CreateClass | ES6Class | Functional
+  # Valid values: CreateClass | ES6Class | Functional | Reason
   componentType: ES6Class
 #+END_SRC
 *** ~version~
@@ -114,7 +114,7 @@ Generates a component:
       -r,--redux-container     Create a redux connected container component
       -n,--react-native        Create a React Native component
       -t,--component-type ARG  The type of component to generate. Valid options:
-                               ES6Class | CreateClass | Functional
+                               ES6Class | CreateClass | Functional | Reason
       -p,--proptypes ARG       Component props and types (enclosed in quotes) - e.g.
                                -p "id:number name:string.isRequired"
       -h,--help                Show this help text
@@ -132,7 +132,7 @@ If ~-n~ is provided as a command line option, the config will be overridden and 
 If the ~-r~ option is provided, a Redux connected container component will be generated.
 
 **** Component Types
-~ES6Class | CreateClass | Functional~
+~ES6Class | CreateClass | Functional | Reason~
 This can be set in the config file as the default type of component to generate.
 If ~-t~ and a valid type (e.g. ~-t ES6Class~) are provided on the command line, the provided type will be generated.
 

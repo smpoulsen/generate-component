@@ -3,6 +3,7 @@
 
 module Templates.Components.React where
 
+import           Data.Text                     (Text)
 import           Templates.Components
 import           Text.InterpolatedString.Perl6 (qc)
 import           Types
@@ -14,6 +15,7 @@ reactComponentTemplate cType propTypes =
     Functional  -> functionalReactComponent propTypes
     ES6Class    -> es6ReactComponent propTypes
     CreateClass -> createClassReactComponent propTypes
+    Reason      -> reasonComponent propTypes
 
 functionalReactComponent :: Maybe [Prop] -> Template
 functionalReactComponent p = Template "COMPONENT.js" [qc|// @flow
@@ -92,3 +94,23 @@ const COMPONENT = createReactClass(\{
 
 export default COMPONENT;
 |]
+
+reasonComponent :: Maybe [Prop] -> Template
+reasonComponent p = Template "COMPONENT.re" [qc|/* COMPONENT.re */
+let component = ReasonReact.statelessComponent "COMPONENT";
+
+let se = ReasonReact.stringToElement;
+
+let make {reasonProps p} _children => \{
+  ...component,
+  render: fun _self =>
+    <div> </div>
+};
+
+/* This wrapper allows you to call React.createElement from JS and pass in props */
+let comp =
+  ReasonReact.wrapReasonForJs
+    ::component
+    (fun jsProps => make {reasonJSProps p} {ocamlList});
+|]
+  where ocamlList = "[||]" :: Text -- Embedding directly killed the quasiquoter

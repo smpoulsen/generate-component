@@ -1,0 +1,8 @@
+* Running goals and todo-list
+** TODO Refactor prop -> text functions in Components.hs
+   There are now several that are very similar. Can abstract common functionality.
+** TODO Add proper ReactNative template for Reason
+   Currently just reuses the regular React one.
+** TODO Utilize a state monad to stop threading so much state around
+** TODO Refactor templatesToGenerate
+   It's currently messy.
