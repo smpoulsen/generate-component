@@ -12,7 +12,7 @@ templatesToGenerate :: ProjectType -> ComponentType -> Maybe [Prop] -> Bool -> [
 templatesToGenerate p c propTypes container =
   if container
     then containerTemplate : containerIndexTemplate : componentTemplates
-    else indexTemplate : componentTemplates
+    else if c == Reason then componentTemplates else indexTemplate : componentTemplates
   where componentTemplates = pickComponentTemplates p c propTypes
 
 pickComponentTemplates :: ProjectType -> ComponentType -> Maybe [Prop] -> [Template]

@@ -28,3 +28,15 @@ propNames ts =
   case ts of
     Nothing -> ""
     Just xs -> intercalate ", " $ fmap (^. name) xs
+
+reasonProps :: Maybe [Prop] -> Text
+reasonProps ts =
+  case ts of
+    Nothing -> ""
+    Just xs -> intercalate " " $ fmap (\x -> ("##" <>) $ (^. name) x) xs
+
+reasonJSProps :: Maybe [Prop] -> Text
+reasonJSProps ts =
+  case ts of
+    Nothing -> ""
+    Just xs -> intercalate " " $ fmap (\x -> (\y -> y <> "::jsProps##" <> y) $ (^. name) x) xs

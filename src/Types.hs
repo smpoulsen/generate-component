@@ -30,7 +30,7 @@ data ProjectType = React | ReactNative
 instance ToJSON ProjectType
 instance FromJSON ProjectType
 
-data ComponentType = ES6Class | CreateClass | Functional
+data ComponentType = ES6Class | CreateClass | Functional | Reason
   deriving (Generic, Read, Show, Eq, Ord)
 instance ToJSON ComponentType
 instance FromJSON ComponentType
@@ -79,7 +79,7 @@ instance Arbitrary ProjectType where
   arbitrary = elements [React, ReactNative]
 
 instance Arbitrary ComponentType where
-  arbitrary = elements [ES6Class, CreateClass, Functional]
+  arbitrary = elements [ES6Class, CreateClass, Functional, Reason]
 
 instance Arbitrary Prop where
   arbitrary = Prop <$>

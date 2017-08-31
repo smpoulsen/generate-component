@@ -3,6 +3,7 @@
 module Templates.Components.ReactNative where
 
 import           Templates.Components
+import           Templates.Components.React    (reasonComponent)
 import           Text.InterpolatedString.Perl6 (qc)
 import           Types
 import           Types.PropTypes
@@ -13,6 +14,7 @@ nativeComponentTemplate cType propTypes =
     Functional  -> functionalNativeComponent propTypes
     ES6Class    -> es6NativeComponent propTypes
     CreateClass -> createClassNativeComponent propTypes
+    Reason      -> reasonNativeComponent propTypes
 
 functionalNativeComponent :: Maybe [Prop] -> Template
 functionalNativeComponent p = Template "COMPONENT.js" [qc|// @flow
@@ -98,3 +100,6 @@ const COMPONENT = createReactClass(\{
 
 export default COMPONENT;
 |]
+
+reasonNativeComponent :: Maybe [Prop] -> Template
+reasonNativeComponent ts = reasonComponent ts

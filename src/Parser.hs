@@ -58,7 +58,7 @@ parseComponentType =
   optional $ option auto
   ( long "component-type"
   <> short 't'
-  <> help "The type of component to generate. Valid options: ES6Class | CreateClass | Functional" )
+  <> help "The type of component to generate. Valid options: ES6Class | CreateClass | Functional | Reason" )
 
 parsePropTypes :: Parser (Maybe [Prop])
 parsePropTypes =
