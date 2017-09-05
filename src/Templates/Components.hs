@@ -33,7 +33,7 @@ reasonProps :: Maybe [Prop] -> Text
 reasonProps ts =
   case ts of
     Nothing -> ""
-    Just xs -> intercalate " " $ fmap (\x -> ("##" <>) $ (^. name) x) xs
+    Just xs -> intercalate " " $ fmap (\x -> ("::" <>) $ (^. name) x) xs
 
 reasonJSProps :: Maybe [Prop] -> Text
 reasonJSProps ts =

@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                componentGenerator
-version:             0.4.4
+version:             0.4.5
 synopsis:            Generate scaffolds for React components.
 description:         A generator for React and React Rative components.
 license:             BSD3
