@@ -50,7 +50,7 @@ es6NativeComponent p = Template "COMPONENT.js" [qc|// @flow
    needed to be useful.
 */
 
-import React from 'react';
+import React,{Component} from 'react';
 import PropTypes from 'prop-types';
 import \{View} from 'react-native';
 
