@@ -1,6 +1,8 @@
 * React Component Generator
 [[https://travis-ci.org/tpoulsen/generate-component][https://travis-ci.org/tpoulsen/generate-component.svg?branch=master]]
 
+### I don't do frontend development any more and as such this repository is woefully out of date. I don't have any intention to update it again so, as of 2022-10-24, it is now archived.
+
 ** Contents
 
 + [[#installation][Installation]]
